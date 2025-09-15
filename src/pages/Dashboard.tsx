@@ -13,14 +13,12 @@ import {
   Button,
   Box,
   Chip,
-  Avatar,
   IconButton,
   Menu,
   MenuItem,
 } from '@mui/material'
 import {
   Person,
-  Assignment,
   Schedule,
   AccountCircle,
   Notifications,
