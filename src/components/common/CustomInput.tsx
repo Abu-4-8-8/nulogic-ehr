@@ -1,3 +1,4 @@
+
 import React, { forwardRef } from 'react'
 import {
   TextField,
@@ -104,7 +105,7 @@ const CustomInput = forwardRef<HTMLDivElement, CustomInputProps>(
           borderColor: isError ? '#DC2626' : '#9ca3af',
         },
         '&.Mui-focused fieldset': {
-          borderColor: isError ? '#DC2626' : '#1976d2',
+          borderColor: isError ? '#DC2626' : 'COLORS.PRIMARY',
           borderWidth: '1px',
         },
         '&.Mui-error fieldset': {
@@ -139,16 +140,16 @@ const CustomInput = forwardRef<HTMLDivElement, CustomInputProps>(
           borderBottomColor: error ? '#f44336' : '#e0e0e0',
         },
         '&:hover:not(.Mui-disabled):before': {
-          borderBottomColor: error ? '#f44336' : '#1976d2',
+          borderBottomColor: error ? '#f44336' : 'COLORS.PRIMARY',
         },
         '&.Mui-focused:after': {
-          borderBottomColor: error ? '#f44336' : '#1976d2',
+          borderBottomColor: error ? '#f44336' : 'COLORS.PRIMARY',
         },
       },
       '& .MuiInputLabel-root': {
         color: isError ? '#DC2626' : '#666',
         '&.Mui-focused': {
-          color: isError ? '#DC2626' : '#1976d2',
+          color: isError ? '#DC2626' : 'COLORS.PRIMARY',
         },
       },
       '& .MuiFormHelperText-root': {

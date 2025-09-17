@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import {
   Box,
-  Button,
   Typography,
   Container,
   Alert,
@@ -14,7 +13,7 @@ import {
 } from '@mui/material'
 import loginImage from '../../assets/login_page_image.png'
 import NuLogicLogo from '../../components/ui/NuLogicLogo'
-import { CustomInput } from '../../components/common'
+import { CustomInput, CustomButton } from '../../components/common'
 import { useAuth } from '../../contexts/AuthContext'
 
 // Validation schema
@@ -86,19 +85,42 @@ const Login: React.FC = () => {
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         overflow: { xs: 'auto', md: 'hidden' },
+        // Full screen background image for screens under 900px
+        backgroundImage: {
+          xs: `url(${loginImage})`,
+          md: 'none',
+        },
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: {
+            xs: 'rgba(255, 255, 255, 0.8)', // White overlay with reduced opacity
+            md: 'transparent',
+          },
+          zIndex: 1,
+        },
       }}
     >
-      {/* Left Panel - Blue Background with Medical Illustration */}
+      {/* Left Panel - Blue Background with Medical Illustration (Desktop only) */}
       <Box
         sx={{
           flex: { xs: 'none', md: 1 },
-          height: { xs: '25vh', sm: '30vh', md: '100vh' },
+          height: { xs: '0', md: '100vh' }, // Hide on mobile
           backgroundColor: '#1976d2',
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' }, // Hide on mobile
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
           overflow: 'hidden',
+          zIndex: 2,
         }}
       >
         {/* Medical Illustration Image */}
@@ -116,8 +138,8 @@ const Login: React.FC = () => {
             src={loginImage}
             alt="Medical consultation illustration"
             sx={{
-              maxWidth: { xs: '180px', sm: '250px', md: '400px', lg: '500px' },
-              maxHeight: { xs: '140px', sm: '200px', md: '400px', lg: '500px' },
+              maxWidth: { md: '400px', lg: '500px' },
+              maxHeight: { md: '400px', lg: '500px' },
               objectFit: 'contain',
               filter: 'brightness(1.1) contrast(1.1)',
             }}
@@ -125,23 +147,27 @@ const Login: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Right Panel - White Background with Login Form */}
+      {/* Right Panel - Login Form (Full screen on mobile, half on desktop) */}
       <Box
         sx={{
           flex: { xs: 1, md: 1 },
-          minHeight: { xs: '75vh', sm: '70vh', md: '100vh' },
-          backgroundColor: 'white',
+          height: { xs: '100vh', md: '100vh' }, // Full height on mobile
+          backgroundColor: {
+            xs: 'transparent', // Transparent on mobile to show background
+            md: 'white',       // White background on desktop
+          },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          padding: { xs: 1.5, sm: 2, md: 4 },
-          py: { xs: 3, sm: 4, md: 8 },
+          justifyContent: 'center', // Center all content
+          padding: { xs: 2, sm: 3, md: 4 },
+          position: 'relative',
+          zIndex: 2,
         }}
       >
         <Container maxWidth="sm">
           {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: { xs: 2.5, sm: 4, md: 6 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: { xs: 3, sm: 4, md: 6 } }}>
             {/* Desktop Logo (960px+) */}
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <NuLogicLogo size="large" variant="horizontal" />
@@ -159,17 +185,21 @@ const Login: React.FC = () => {
           {/* Login Form Card */}
           <Card
             sx={{
-              background: '#FFFFFF',
+              background: {
+                xs: 'rgba(255, 255, 255, 0.95)', // Semi-transparent white for mobile
+                md: '#FFFFFF',                    // Solid white for desktop
+              },
               boxShadow: { 
-                xs: 'none', 
+                xs: '0px 4px 12px rgba(0, 0, 0, 0.15)', // Enhanced shadow for mobile
                 md: '0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)' 
               },
-              borderRadius: { xs: '0px', md: '8px' },
+              borderRadius: { xs: '12px', md: '8px' },
               border: { xs: 'none', md: '1px solid #F3F4F6' },
               width: '100%',
+              backdropFilter: { xs: 'blur(10px)', md: 'none' }, // Glass effect for mobile
             }}
           >
-            <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 4 } }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
               <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                 {/* Log In Title */}
                 <Typography
@@ -178,8 +208,8 @@ const Login: React.FC = () => {
                     fontWeight: '700',
                     color: '#1f2937',
                     textAlign: 'left',
-                    mb: { xs: 2.5, sm: 3, md: 4 },
-                    fontSize: { xs: '24px', sm: '28px', md: '32px' },
+                    mb: { xs: 3, sm: 4, md: 4 },
+                    fontSize: { xs: '28px', sm: '30px', md: '32px' },
                     lineHeight: 1.2,
                   }}
                 >
@@ -204,7 +234,7 @@ const Login: React.FC = () => {
                       {...field}
                       hasError={!!errors.email}
                       errorMessage={errors.email?.message}
-                      containerSx={{ mb: { xs: 2, sm: 2.5, md: 3 } }}
+                      containerSx={{ mb: { xs: 2.5, sm: 3, md: 3 } }}
                     />
                   )}
                 />
@@ -222,20 +252,18 @@ const Login: React.FC = () => {
                       showPasswordToggle
                       hasError={!!errors.password}
                       errorMessage={errors.password?.message}
-                      containerSx={{ mb: { xs: 2, sm: 2.5, md: 3 } }}
+                      containerSx={{ mb: { xs: 2.5, sm: 3, md: 3 } }}
                     />
                   )}
                 />
 
                 {/* Forgot Password Link */}
-                <Box sx={{ textAlign: 'left', mb: { xs: 2.5, sm: 3, md: 4 } }}>
-                  <Button
+                <Box sx={{ textAlign: 'left', mb: { xs: 3, sm: 4, md: 4 } }}>
+                  <CustomButton
                     variant="text"
+                    label="Forgot Password?"
+                    customColor="primary"
                     sx={{
-                      color: '#1976d2',
-                      textTransform: 'none',
-                      fontWeight: '400',
-                      fontSize: '16px',
                       padding: 0,
                       minWidth: 'auto',
                       '&:hover': {
@@ -243,39 +271,19 @@ const Login: React.FC = () => {
                         textDecoration: 'underline',
                       },
                     }}
-                  >
-                    Forgot Password?
-                  </Button>
+                  />
                 </Box>
 
                 {/* Log In Button */}
-                <Button
+                <CustomButton
                   type="submit"
                   fullWidth
                   variant="contained"
-                    disabled={isLoading}
-                  sx={{
-                    backgroundColor: '#1976d2',
-                    color: 'white',
-                    py: 2,
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    textTransform: 'none',
-                    height: '56px',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      backgroundColor: '#1565c0',
-                      boxShadow: 'none',
-                    },
-                    '&:disabled': {
-                      backgroundColor: '#9ca3af',
-                      color: 'white',
-                    },
-                  }}
-                >
-                  {isLoading ? 'Signing In...' : 'Log In'}
-                </Button>
+                  disabled={isLoading}
+                  label={isLoading ? "Signing In..." : "Log In"}
+                  customColor="primary"
+                  size="large"
+                />
               </Box>
             </CardContent>
           </Card>
