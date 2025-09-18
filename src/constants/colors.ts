@@ -46,9 +46,17 @@ export const COLORS = {
   
   // Neutral colors (from Figma)
   NEUTRAL_80: '#21262B', // Main text color from Figma
+  NEUTRAL_70: '#373D41', // Neutral/70 from Figma - used for dropdown text
+  NEUTRAL_60: '#595F63', // Neutral/60 from Figma - used for inactive text
   NEUTRAL_5: '#E7E7E7',  // Border color from Figma
   NEUTRAL_ICON: '#373E41', // Icon color from Figma
   ACTIVE_BG: '#EEF7FE',   // Active background from Figma
+  
+  // Negative colors (from Figma)
+  NEGATIVE_60: '#B1000F', // Negative/60 from Figma - used for logout/destructive actions
+  
+  // Outline colors (from Figma)
+  OUTLINE_INFO: '#5598F6', // Outline/Info from Figma - used for avatar backgrounds
   
   // Legacy neutral colors
   DEFAULT: '#6b7280',
