@@ -46,8 +46,8 @@ export interface CustomDropdownProps {
   leadingIcon?: React.ReactNode
   trailingIcon?: React.ReactNode
   options: DropdownOption[]
-  value?: string | number
-  onChange?: (value: string | number, option: DropdownOption) => void
+  value?: string | number | (string | number)[]
+  onChange?: (value: string | number | (string | number)[], option: DropdownOption) => void
   onSearch?: (searchTerm: string) => void
   searchPlaceholder?: string
   multiple?: boolean
@@ -88,19 +88,36 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   const isOpen = Boolean(anchorEl)
 
-  // Initialize selected values
+  // Initialize selected values when `value` changes
   useEffect(() => {
     if (multiple && Array.isArray(value)) {
       setSelectedValues(value)
     } else if (!multiple && value !== undefined) {
       setSelectedValues([value])
+    } else {
+      setSelectedValues([])
     }
   }, [value, multiple])
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (!disabled) {
-      setAnchorEl(event.currentTarget)
+  // Helpers
+  const getSelectedOptions = (): DropdownOption[] => {
+    return options.filter(opt => selectedValues.includes(opt.value))
+  }
+
+  const isSelected = (val: string | number) => selectedValues.includes(val)
+
+  const displayText = (() => {
+    if (multiple) {
+      if (selectedValues.length === 0) return placeholder
+      if (selectedValues.length === 1) return getSelectedOptions()[0]?.label
+      return `${selectedValues.length} items selected`
     }
+    return getSelectedOptions()[0]?.label || placeholder
+  })()
+
+  // Event Handlers
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!disabled) setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
@@ -112,9 +129,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     if (option.disabled) return
 
     if (multiple) {
-      const newValues = selectedValues.includes(option.value)
+      const newValues = isSelected(option.value)
         ? selectedValues.filter(v => v !== option.value)
         : [...selectedValues, option.value]
+
       setSelectedValues(newValues)
       onChange?.(newValues, option)
     } else {
@@ -130,103 +148,44 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     onSearch?.(searchValue)
   }
 
-  const getSelectedOption = () => {
-    if (multiple) {
-      return options.filter(option => selectedValues.includes(option.value))
-    }
-    return options.find(option => option.value === selectedValues[0])
-  }
-
-  const getDisplayText = () => {
-    if (multiple) {
-      const selected = getSelectedOption() as DropdownOption[]
-      if (selected.length === 0) return placeholder
-      if (selected.length === 1) return selected[0].label
-      return `${selected.length} items selected`
-    }
-    
-    const selected = getSelectedOption() as DropdownOption | undefined
-    return selected ? selected.label : placeholder
-  }
-
+  // UI Helpers
   const getSizeStyles = () => {
     switch (size) {
-      case 'small':
-        return {
-          height: '40px',
-          fontSize: '14px',
-          padding: '8px 12px',
-        }
-      case 'large':
-        return {
-          height: '64px',
-          fontSize: '18px',
-          padding: '20px 16px',
-        }
-      default:
-        return {
-          height: '56px',
-          fontSize: '16px',
-          padding: '16px 14px',
-        }
+      case 'small': return { height: '40px', fontSize: '14px', padding: '8px 12px' }
+      case 'large': return { height: '64px', fontSize: '18px', padding: '20px 16px' }
+      default: return { height: '56px', fontSize: '16px', padding: '16px 14px' }
     }
   }
 
-  const getIconSize = () => {
-    switch (size) {
-      case 'small':
-        return '20px'
-      case 'large':
-        return '28px'
-      default:
-        return '24px'
-    }
-  }
+  const getIconSize = () => (size === 'small' ? '20px' : size === 'large' ? '28px' : '24px')
 
   const getDefaultLeadingIcon = () => {
     switch (type) {
-      case 'icon-leading':
-        return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'search':
-        return <Search sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'avatar-leading':
-        return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'dot-leading':
-        return (
-          <Box
-            sx={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: COLORS.PRIMARY,
-            }}
-          />
-        )
-      default:
-        return null
+      case 'icon-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
+      case 'search': return <Search sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
+      case 'avatar-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
+      case 'dot-leading': return <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: COLORS.PRIMARY }} />
+      default: return null
     }
   }
 
-  const getDefaultTrailingIcon = () => {
-    return (
-      <KeyboardArrowDown
-        sx={{
-          fontSize: getIconSize(),
-          color: disabled ? COLORS.GRAY_400 : COLORS.GRAY_500,
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 0.2s ease-in-out',
-        }}
-      />
-    )
-  }
+  const getDefaultTrailingIcon = () => (
+    <KeyboardArrowDown
+      sx={{
+        fontSize: getIconSize(),
+        color: disabled ? COLORS.GRAY_400 : COLORS.GRAY_500,
+        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+        transition: 'transform 0.2s ease-in-out',
+      }}
+    />
+  )
 
-  const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtered Options
+  const filteredOptions = options.filter(opt =>
+    opt.label.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const sizeStyles = getSizeStyles()
-  const displayText = getDisplayText()
-  const selectedOption = getSelectedOption()
   const isError = error || !!errorMessage
 
   const defaultSx = {
@@ -236,7 +195,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     borderRadius: '8px',
     cursor: disabled ? 'not-allowed' : 'pointer',
     transition: 'all 0.2s ease-in-out',
-    boxShadow: isOpen ? '0px 0px 0px 4px rgba(0, 119, 198, 0.1)' : '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+    boxShadow: isOpen
+      ? '0px 0px 0px 4px rgba(0, 119, 198, 0.1)'
+      : '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
     '&:hover': {
       borderColor: disabled ? COLORS.GRAY_300 : (isError ? COLORS.ERROR : COLORS.GRAY_400),
     },
@@ -249,27 +210,24 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   return (
     <Box sx={{ mb: 2, ...containerSx }}>
+      {/* Label */}
       {label && (
         <Typography
           variant="body1"
           sx={{
-            fontWeight: '500',
+            fontWeight: 500,
             color: isError ? COLORS.ERROR : COLORS.GRAY_700,
             mb: 1.5,
-            fontSize: '16px',
+            fontSize: 16,
             lineHeight: 1.5,
             ...labelSx,
           }}
         >
-          {label}
-          {required && (
-            <Typography component="span" sx={{ color: COLORS.ERROR, ml: 0.5 }}>
-              *
-            </Typography>
-          )}
+          {label}{required && <Typography component="span" sx={{ color: COLORS.ERROR, ml: 0.5 }}>*</Typography>}
         </Typography>
       )}
 
+      {/* Main Box */}
       <Box
         ref={dropdownRef}
         sx={defaultSx}
@@ -283,15 +241,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           }
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            height: sizeStyles.height,
-            padding: sizeStyles.padding,
-            gap: 1,
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center', height: sizeStyles.height, padding: sizeStyles.padding, gap: 1 }}>
           {/* Leading Icon */}
           {(showLeadingIcon || leadingIcon) && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -299,32 +249,25 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             </Box>
           )}
 
-          {/* Avatar for avatar-leading type */}
-          {type === 'avatar-leading' && selectedOption && !Array.isArray(selectedOption) && (
-            <Avatar
-              src={selectedOption.avatar}
-              sx={{
-                width: '24px',
-                height: '24px',
-                fontSize: '12px',
-              }}
-            >
-              {selectedOption.label.charAt(0)}
+          {/* Avatar for avatar-leading */}
+          {type === 'avatar-leading' && !multiple && getSelectedOptions()[0]?.avatar && (
+            <Avatar src={getSelectedOptions()[0].avatar} sx={{ width: 24, height: 24, fontSize: 12 }}>
+              {getSelectedOptions()[0].label.charAt(0)}
             </Avatar>
           )}
 
-          {/* Display Text */}
+          {/* Display */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             {multiple && selectedValues.length > 0 ? (
               <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                {getSelectedOption().slice(0, 2).map((option: DropdownOption) => (
+                {getSelectedOptions().slice(0, 2).map(opt => (
                   <Chip
-                    key={option.value}
-                    label={option.label}
+                    key={opt.value}
+                    label={opt.label}
                     size="small"
                     sx={{
-                      height: '24px',
-                      fontSize: '12px',
+                      height: 24,
+                      fontSize: 12,
                       backgroundColor: COLORS.PRIMARY_10,
                       color: COLORS.PRIMARY,
                     }}
@@ -334,12 +277,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   <Chip
                     label={`+${selectedValues.length - 2}`}
                     size="small"
-                    sx={{
-                      height: '24px',
-                      fontSize: '12px',
-                      backgroundColor: COLORS.GRAY_200,
-                      color: COLORS.GRAY_600,
-                    }}
+                    sx={{ height: 24, fontSize: 12, backgroundColor: COLORS.GRAY_200, color: COLORS.GRAY_600 }}
                   />
                 )}
               </Box>
@@ -348,7 +286,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 sx={{
                   fontSize: sizeStyles.fontSize,
                   color: disabled ? COLORS.GRAY_400 : (selectedValues.length > 0 ? COLORS.GRAY_900 : COLORS.GRAY_500),
-                  fontWeight: selectedValues.length > 0 ? '400' : '400',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -364,35 +301,18 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             <Chip
               label="New"
               size="small"
-              sx={{
-                height: '20px',
-                fontSize: '10px',
-                backgroundColor: COLORS.SECONDARY,
-                color: COLORS.WHITE,
-                fontWeight: '500',
-              }}
+              sx={{ height: 20, fontSize: 10, backgroundColor: COLORS.SECONDARY, color: COLORS.WHITE, fontWeight: 500 }}
             />
           )}
 
           {/* Trailing Icon */}
-          {showTrailingIcon && (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {trailingIcon || getDefaultTrailingIcon()}
-            </Box>
-          )}
+          {showTrailingIcon && <Box sx={{ display: 'flex', alignItems: 'center' }}>{trailingIcon || getDefaultTrailingIcon()}</Box>}
         </Box>
       </Box>
 
-      {/* Supporting Text or Error Message */}
+      {/* Supporting / Error Text */}
       {(supportingText || errorMessage) && (
-        <Typography
-          sx={{
-            fontSize: '14px',
-            color: isError ? COLORS.ERROR : COLORS.GRAY_600,
-            marginTop: '6px',
-            fontWeight: '400',
-          }}
-        >
+        <Typography sx={{ fontSize: 14, color: isError ? COLORS.ERROR : COLORS.GRAY_600, mt: '6px', fontWeight: 400 }}>
           {isError ? errorMessage : supportingText}
         </Typography>
       )}
@@ -405,9 +325,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         PaperProps={{
           sx: {
             minWidth: dropdownRef.current?.offsetWidth || 200,
-            maxHeight: '300px',
-            borderRadius: '8px',
-            boxShadow: '0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            maxHeight: 300,
+            borderRadius: 2,
+            boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
             border: `1px solid ${COLORS.GRAY_200}`,
             mt: 1,
           },
@@ -415,7 +335,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        {/* Search Input */}
+        {/* Search */}
         {type === 'search' && (
           <Box sx={{ p: 1, borderBottom: `1px solid ${COLORS.GRAY_200}` }}>
             <TextField
@@ -427,32 +347,26 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search sx={{ fontSize: '20px', color: COLORS.GRAY_500 }} />
+                    <Search sx={{ fontSize: 20, color: COLORS.GRAY_500 }} />
                   </InputAdornment>
                 ),
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  height: '40px',
-                  fontSize: '14px',
-                  '& fieldset': {
-                    borderColor: COLORS.GRAY_300,
-                  },
-                  '&:hover fieldset': {
-                    borderColor: COLORS.GRAY_400,
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: COLORS.PRIMARY,
-                  },
+                  height: 40,
+                  fontSize: 14,
+                  '& fieldset': { borderColor: COLORS.GRAY_300 },
+                  '&:hover fieldset': { borderColor: COLORS.GRAY_400 },
+                  '&.Mui-focused fieldset': { borderColor: COLORS.PRIMARY },
                 },
               }}
             />
           </Box>
         )}
 
-        {/* Menu Items */}
+        {/* Options */}
         {filteredOptions.length > 0 ? (
-          filteredOptions.map((option) => (
+          filteredOptions.map(option => (
             <MenuItem
               key={option.value}
               onClick={() => handleOptionSelect(option)}
@@ -460,88 +374,54 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               sx={{
                 py: 1.5,
                 px: 2,
-                fontSize: '16px',
+                fontSize: 16,
                 color: option.disabled ? COLORS.GRAY_400 : COLORS.GRAY_900,
-                '&:hover': {
-                  backgroundColor: COLORS.PRIMARY_10,
-                },
+                '&:hover': { backgroundColor: COLORS.PRIMARY_10 },
                 '&.Mui-selected': {
                   backgroundColor: COLORS.PRIMARY_10,
-                  '&:hover': {
-                    backgroundColor: COLORS.PRIMARY_20,
-                  },
+                  '&:hover': { backgroundColor: COLORS.PRIMARY_20 },
                 },
               }}
             >
               {/* Selection Icon */}
-              <ListItemIcon sx={{ minWidth: '32px' }}>
+              <ListItemIcon sx={{ minWidth: 32 }}>
                 {multiple ? (
-                  selectedValues.includes(option.value) ? (
-                    <Check sx={{ fontSize: '20px', color: COLORS.PRIMARY }} />
+                  isSelected(option.value) ? (
+                    <Check sx={{ fontSize: 20, color: COLORS.PRIMARY }} />
                   ) : (
-                    <RadioButtonUnchecked sx={{ fontSize: '20px', color: COLORS.GRAY_400 }} />
+                    <RadioButtonUnchecked sx={{ fontSize: 20, color: COLORS.GRAY_400 }} />
                   )
                 ) : (
-                  selectedValues.includes(option.value) && (
-                    <Check sx={{ fontSize: '20px', color: COLORS.PRIMARY }} />
-                  )
+                  isSelected(option.value) && <Check sx={{ fontSize: 20, color: COLORS.PRIMARY }} />
                 )}
               </ListItemIcon>
 
-              {/* Avatar for avatar-leading type */}
+              {/* Avatar */}
               {type === 'avatar-leading' && (
-                <Avatar
-                  src={option.avatar}
-                  sx={{
-                    width: '24px',
-                    height: '24px',
-                    fontSize: '12px',
-                    mr: 1,
-                  }}
-                >
+                <Avatar src={option.avatar} sx={{ width: 24, height: 24, fontSize: 12, mr: 1 }}>
                   {option.label.charAt(0)}
                 </Avatar>
               )}
 
               {/* Option Icon */}
-              {option.icon && (
-                <ListItemIcon sx={{ minWidth: '32px' }}>
-                  {option.icon}
-                </ListItemIcon>
-              )}
+              {option.icon && <ListItemIcon sx={{ minWidth: 32 }}>{option.icon}</ListItemIcon>}
 
-              {/* Option Text */}
-              <ListItemText
-                primary={option.label}
-                sx={{
-                  '& .MuiListItemText-primary': {
-                    fontSize: '16px',
-                    fontWeight: '400',
-                  },
-                }}
-              />
+              {/* Text */}
+              <ListItemText primary={option.label} sx={{ '& .MuiListItemText-primary': { fontSize: 16, fontWeight: 400 } }} />
 
               {/* Badge */}
               {option.badge && (
                 <Chip
                   label={option.badge}
                   size="small"
-                  sx={{
-                    height: '20px',
-                    fontSize: '10px',
-                    backgroundColor: COLORS.SECONDARY,
-                    color: COLORS.WHITE,
-                    fontWeight: '500',
-                  }}
+                  sx={{ height: 20, fontSize: 10, backgroundColor: COLORS.SECONDARY, color: COLORS.WHITE, fontWeight: 500 }}
                 />
               )}
             </MenuItem>
           ))
         ) : (
           <MenuItem disabled sx={{ py: 2, px: 2, textAlign: 'center' }}>
-            <Typography sx={{ color: COLORS.GRAY_500, fontSize: '14px' }}>
-              No options found
-            </Typography>
+            <Typography sx={{ color: COLORS.GRAY_500, fontSize: 14 }}>No options found</Typography>
           </MenuItem>
         )}
       </Menu>
