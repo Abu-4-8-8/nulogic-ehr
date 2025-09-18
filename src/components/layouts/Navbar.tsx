@@ -12,14 +12,16 @@ import {
 import { COLORS } from '../../constants/colors'
 import { TYPOGRAPHY } from '../../constants/typography'
 import NuLogicLogo from '../ui/NuLogicLogo'
-import { CustomAvatar, CustomDropdown, DropdownOption } from '../common'
+import CustomAvatar from '../common/CustomAvatar'
+import CustomDropdown, { DropdownOption } from '../common/CustomDropdown'
 
 export interface NavLink {
   id?: string
   label: string
   href: string
+  path?: string // Optional path for routing (can be different from href)
   type?: 'link' | 'dropdown'
-  items?: { label: string; href: string }[]
+  items?: { label: string; href: string; path?: string }[]
   active?: boolean
 }
 
@@ -55,6 +57,61 @@ const Navbar: React.FC<NavbarProps> = ({
   const theme = useTheme()
   const isMobile = useMediaQuery('(max-width:900px)')
 
+  // Centralized Responsive Sizing System
+  const RESPONSIVE_SIZES = {
+    // Font sizes
+    navLinkFont: {
+      xs: '14px',        // Mobile: < 900px
+      sm: '14px',        // Small: 900-1025px  
+      md: '16px',        // Medium: 1025px+
+      lg: '16px'         // Large: 1200px+
+    },
+    profileNameFont: {
+      sm: '14px',        // Small: 900-1025px  
+      md: '16px',        // Medium: 1025px+
+      lg: '16px'         // Large: 1200px+
+    },
+    avatarInitialsFont: {
+      xs: '11px',        // Mobile: < 900px
+      sm: '12px',        // Small: 900-1025px  
+      md: '13px',        // Medium: 1025px+
+      lg: '14px'         // Large: 1200px+
+    },
+    
+    // Icon sizes
+    navDropdownIcon: {
+      xs: 16,            // Mobile: < 900px
+      sm: 18,            // Small: 900-1025px  
+      md: 20,            // Medium: 1025px+
+      lg: 20             // Large: 1200px+
+    },
+    profileDropdownIcon: {
+      xs: 16,            // Mobile: < 900px
+      sm: 16,            // Small: 900-1025px  
+      md: 18,            // Medium: 1025px+
+      lg: 20             // Large: 1200px+
+    },
+    
+    // Avatar dimensions
+    avatarSize: {
+      xs: 28,            // Mobile: < 900px
+      sm: 32,            // Small: 900-1025px  
+      md: 36,            // Medium: 1025px+
+      lg: 36             // Large: 1200px+
+    },
+    
+    // Padding/Spacing
+    navLinkPadding: {
+      xs: 1.5,           // Mobile: < 900px
+      sm: 2,             // Small: 900-1025px  
+      md: 2.5            // Medium: 1025px+
+    },
+    buttonPadding: {
+      x: { xs: 1.5, sm: 2, md: 2.5 },
+      y: { xs: 0.75, sm: 1, md: 1.25 }
+    }
+  }
+
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null)
   const [menuAnchor, setMenuAnchor] = useState<{ el: HTMLElement | null; type: 'profile' | 'notification' | 'billing' | null }>({
@@ -66,8 +123,10 @@ const Navbar: React.FC<NavbarProps> = ({
     setMenuAnchor({ el: event.currentTarget, type })
   const closeMenu = () => setMenuAnchor({ el: null, type: null })
 
-  const navigate = (href: string) => {
-    onNavigate?.(href)
+  const navigate = (href: string, path?: string) => {
+    // Use path if provided, otherwise use href
+    const navigationTarget = path || href
+    onNavigate?.(navigationTarget)
     setMobileOpen(false)
   }
 
@@ -98,9 +157,9 @@ const Navbar: React.FC<NavbarProps> = ({
             )}
               
               {/* Logo */}
-            <Box sx={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-              <NuLogicLogo size="small" />
-          </Box>
+                          <Box sx={{ cursor: 'pointer' }} onClick={() => navigate('/', '/')}>
+                <NuLogicLogo size="small" />
+              </Box>
 
               {/* Desktop Navigation */}
           {!isMobile && (
@@ -117,21 +176,24 @@ const Navbar: React.FC<NavbarProps> = ({
                       }}
                     >
                                       <Button
-                        onClick={() => link.type === 'link' && navigate(link.href)}
+                        onClick={() => link.type === 'link' && navigate(link.href, link.path)}
                         onClickCapture={(e) => link.type === 'dropdown' && openMenu(e as any, 'billing')}
                         endIcon={link.type === 'dropdown' ? (
-                          <KeyboardArrowDownIcon sx={{ fontSize: 18, color: COLORS.NEUTRAL_80 }} />
+                          <KeyboardArrowDownIcon sx={{ 
+                            fontSize: RESPONSIVE_SIZES.navDropdownIcon, 
+                            color: COLORS.NEUTRAL_80 
+                          }} />
                         ) : undefined}
                         sx={{
                           fontFamily: 'Figtree',
                           fontWeight: link.active ? 500 : 400,
                           fontStyle: 'normal',
-                          fontSize: '14px',
+                          fontSize: RESPONSIVE_SIZES.navLinkFont,
                           lineHeight: '120%', // 120% line-height as specified
                           letterSpacing: '0%',
                           textTransform: 'none',
                           color: link.active ? COLORS.PRIMARY : COLORS.NEUTRAL_60,
-                          px: 2,
+                          px: RESPONSIVE_SIZES.navLinkPadding,
                           py: 1.5,
                           minWidth: 'auto',
                           height: '100%',
@@ -161,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({
                             fontFamily: 'Figtree',
                             fontWeight: link.active ? 500 : 400,
                             fontStyle: 'normal',
-                            fontSize: '14px',
+                            fontSize: RESPONSIVE_SIZES.navLinkFont,
                             lineHeight: '120%',
                             letterSpacing: '0%',
                             color: 'inherit',
@@ -189,7 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     borderRadius: '10px',
                     backgroundColor: COLORS.WHITE,
                     '&:hover': {
-                      backgroundColor: COLORS.GRAY_50
+                      backgroundColor: COLORS.NEUTRAL_5
                     }
                   }}
                 >
@@ -207,7 +269,7 @@ const Navbar: React.FC<NavbarProps> = ({
                         borderRadius: '10px',
                         backgroundColor: COLORS.WHITE,
                         '&:hover': {
-                          backgroundColor: COLORS.GRAY_50
+                          backgroundColor: COLORS.NEUTRAL_5
                         }
                       }}
                     >
@@ -248,8 +310,8 @@ const Navbar: React.FC<NavbarProps> = ({
                     {/* Avatar */}
                     <Box
                       sx={{
-                        width: 32,
-                        height: 32,
+                        width: RESPONSIVE_SIZES.avatarSize,
+                        height: RESPONSIVE_SIZES.avatarSize,
                         borderRadius: '50%',
                         backgroundColor: COLORS.OUTLINE_INFO,
                         display: 'flex',
@@ -263,8 +325,8 @@ const Navbar: React.FC<NavbarProps> = ({
                           fontFamily: 'Figtree',
                           fontWeight: 500,
                           color: COLORS.WHITE,
-                          fontSize: 12,
-                          lineHeight: '14.4px', // 1.2 * 12px
+                          fontSize: RESPONSIVE_SIZES.avatarInitialsFont,
+                          lineHeight: '120%',
                           whiteSpace: 'nowrap'
                         }}
                       >
@@ -277,8 +339,8 @@ const Navbar: React.FC<NavbarProps> = ({
                       <Typography
                         sx={{
                           fontFamily: 'Figtree',
-                          fontSize: 14,
-                          lineHeight: '16.8px', // 1.2 * 14px
+                          fontSize: RESPONSIVE_SIZES.profileNameFont,
+                          lineHeight: '120%',
                           fontWeight: 400,
                           color: COLORS.NEUTRAL_80,
                           whiteSpace: 'nowrap'
@@ -290,7 +352,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     
                     {/* Dropdown Arrow */}
                     <KeyboardArrowDownIcon sx={{ 
-                      fontSize: 16, 
+                      fontSize: RESPONSIVE_SIZES.profileDropdownIcon, 
                       color: COLORS.NEUTRAL_70 
                     }} />
                   </Button>
@@ -298,14 +360,14 @@ const Navbar: React.FC<NavbarProps> = ({
               ) : (
                 <Button 
                   variant="outlined" 
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/login', '/login')}
                   sx={{
                     fontFamily: 'Figtree',
-                    fontSize: 14,
-                    lineHeight: '16.8px',
+                    fontSize: RESPONSIVE_SIZES.navLinkFont,
+                    lineHeight: '120%',
                     fontWeight: 400,
-                    px: 2,
-                    py: 1,
+                    px: RESPONSIVE_SIZES.buttonPadding.x,
+                    py: RESPONSIVE_SIZES.buttonPadding.y,
                     minWidth: 'auto'
                   }}
                 >
@@ -437,7 +499,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   {links.find(l => l.id === 'billing')?.items?.map(child => (
                     <MenuItem 
                       key={child.label} 
-                      onClick={() => { navigate(child.href); closeMenu() }}
+                      onClick={() => { navigate(child.href, child.path); closeMenu() }}
                       sx={{
                         px: { xs: '8px', sm: '12px' },
                         py: { xs: '6px', sm: '8px' },
@@ -512,12 +574,12 @@ const Navbar: React.FC<NavbarProps> = ({
                       />
                     </ListItem>
                     {mobileDropdownOpen === link.id && (
-                      <Box sx={{ backgroundColor: COLORS.GRAY_50 }}>
+                      <Box sx={{ backgroundColor: COLORS.NEUTRAL_5 }}>
                         {link.items.map(item => (
-                          <ListItem 
-                            key={item.label} 
-                            onClick={() => navigate(item.href)} 
-                            sx={{ 
+                                                      <ListItem 
+                              key={item.label} 
+                              onClick={() => navigate(item.href, item.path)} 
+                              sx={{ 
                               cursor: 'pointer',
                               pl: 4,
                               py: 1,
@@ -548,7 +610,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   </>
                 ) : (
                   <ListItem 
-                    onClick={() => navigate(link.href)} 
+                    onClick={() => navigate(link.href, link.path)} 
                     sx={{ 
                       cursor: 'pointer',
                       py: 1,
