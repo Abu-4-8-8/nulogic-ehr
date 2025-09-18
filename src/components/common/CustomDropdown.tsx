@@ -11,6 +11,15 @@ import {
   Chip,
   TextField,
   InputAdornment,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  Select,
+  OutlinedInput,
+  InputLabel,
+  Divider,
+  useTheme,
+  alpha,
 } from '@mui/material'
 import {
   KeyboardArrowDown,
@@ -18,6 +27,7 @@ import {
   Check,
   RadioButtonUnchecked,
   AccountCircle,
+  ExpandMore,
 } from '@mui/icons-material'
 import { COLORS } from '../../constants/colors'
 
@@ -28,9 +38,12 @@ export interface DropdownOption {
   avatar?: string
   badge?: string
   disabled?: boolean
+  divider?: boolean // Add divider after this option
+  group?: string // Group label for option grouping
 }
 
 export interface CustomDropdownProps {
+  // Basic Props
   label?: string
   placeholder?: string
   supportingText?: string
@@ -38,25 +51,49 @@ export interface CustomDropdownProps {
   errorMessage?: string
   disabled?: boolean
   required?: boolean
+  
+  // Size and Variants
   size?: 'small' | 'medium' | 'large'
-  type?: 'default' | 'icon-leading' | 'search' | 'avatar-leading' | 'dot-leading'
+  variant?: 'outlined' | 'filled' | 'standard'
+  
+  // Types and Features
+  type?: 'default' | 'icon-leading' | 'search' | 'avatar-leading' | 'dot-leading' | 'native-select'
   showBadge?: boolean
   showLeadingIcon?: boolean
   showTrailingIcon?: boolean
   leadingIcon?: React.ReactNode
   trailingIcon?: React.ReactNode
+  
+  // Options and Selection
   options: DropdownOption[]
   value?: string | number | (string | number)[]
   onChange?: (value: string | number | (string | number)[], option: DropdownOption) => void
   onSearch?: (searchTerm: string) => void
   searchPlaceholder?: string
   multiple?: boolean
+  
+  // Advanced Features
+  groupBy?: boolean // Enable option grouping
+  virtualized?: boolean // For large lists
+  clearable?: boolean // Add clear button
+  loading?: boolean // Show loading state
+  loadingText?: string
+  noOptionsText?: string
+  
+  // Styling
   containerSx?: object
   labelSx?: object
   sx?: object
+  menuProps?: object
+  
+  // Material-UI Integration
+  fullWidth?: boolean
+  margin?: 'none' | 'dense' | 'normal'
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
+  // Basic Props
   label,
   placeholder = 'Select an option',
   supportingText,
@@ -64,23 +101,47 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   errorMessage,
   disabled = false,
   required = false,
+  
+  // Size and Variants
   size = 'medium',
+  variant = 'outlined',
+  
+  // Types and Features
   type = 'default',
   showBadge = false,
   showLeadingIcon = false,
   showTrailingIcon = true,
   leadingIcon,
   trailingIcon,
+  
+  // Options and Selection
   options = [],
   value,
   onChange,
   onSearch,
   searchPlaceholder = 'Search...',
   multiple = false,
+  
+  // Advanced Features
+  groupBy = false,
+  virtualized = false,
+  clearable = false,
+  loading = false,
+  loadingText = 'Loading...',
+  noOptionsText = 'No options found',
+  
+  // Styling
   containerSx = {},
   labelSx = {},
   sx = {},
+  menuProps = {},
+  
+  // Material-UI Integration
+  fullWidth = true,
+  margin = 'normal',
+  color = 'primary',
 }) => {
+  const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedValues, setSelectedValues] = useState<(string | number)[]>([])
@@ -92,7 +153,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   useEffect(() => {
     if (multiple && Array.isArray(value)) {
       setSelectedValues(value)
-    } else if (!multiple && value !== undefined) {
+    } else if (!multiple && value !== undefined && !Array.isArray(value)) {
       setSelectedValues([value])
     } else {
       setSelectedValues([])
@@ -148,37 +209,69 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     onSearch?.(searchValue)
   }
 
+  const handleClear = () => {
+    setSelectedValues([])
+    onChange?.(multiple ? [] : '', options[0])
+  }
+
   // UI Helpers
   const getSizeStyles = () => {
     switch (size) {
-      case 'small': return { height: '40px', fontSize: '14px', padding: '8px 12px' }
-      case 'large': return { height: '64px', fontSize: '18px', padding: '20px 16px' }
-      default: return { height: '56px', fontSize: '16px', padding: '16px 14px' }
+      case 'small': return { 
+        height: '40px', 
+        fontSize: '14px', 
+        padding: '8px 12px',
+        iconSize: '20px'
+      }
+      case 'large': return { 
+        height: '64px', 
+        fontSize: '18px', 
+        padding: '20px 16px',
+        iconSize: '28px'
+      }
+      default: return { 
+        height: '56px', 
+        fontSize: '16px', 
+        padding: '16px 14px',
+        iconSize: '24px'
+      }
     }
   }
 
-  const getIconSize = () => (size === 'small' ? '20px' : size === 'large' ? '28px' : '24px')
+  const getIconSize = () => getSizeStyles().iconSize
 
   const getDefaultLeadingIcon = () => {
     switch (type) {
-      case 'icon-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'search': return <Search sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'avatar-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: COLORS.GRAY_500 }} />
-      case 'dot-leading': return <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: COLORS.PRIMARY }} />
+      case 'icon-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: theme.palette.text.secondary }} />
+      case 'search': return <Search sx={{ fontSize: getIconSize(), color: theme.palette.text.secondary }} />
+      case 'avatar-leading': return <AccountCircle sx={{ fontSize: getIconSize(), color: theme.palette.text.secondary }} />
+      case 'dot-leading': return <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: theme.palette.primary.main }} />
       default: return null
     }
   }
 
   const getDefaultTrailingIcon = () => (
-    <KeyboardArrowDown
+    <ExpandMore
       sx={{
         fontSize: getIconSize(),
-        color: disabled ? COLORS.GRAY_400 : COLORS.GRAY_500,
+        color: disabled ? theme.palette.text.disabled : theme.palette.text.secondary,
         transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-        transition: 'transform 0.2s ease-in-out',
+        transition: theme.transitions.create('transform', {
+          duration: theme.transitions.duration.shorter,
+        }),
       }}
     />
   )
+
+  // Group options if groupBy is enabled
+  const groupedOptions = groupBy 
+    ? options.reduce((groups, option) => {
+        const group = option.group || 'Other'
+        if (!groups[group]) groups[group] = []
+        groups[group].push(option)
+        return groups
+      }, {} as Record<string, DropdownOption[]>)
+    : { '': options }
 
   // Filtered Options
   const filteredOptions = options.filter(opt =>
@@ -188,52 +281,166 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const sizeStyles = getSizeStyles()
   const isError = error || !!errorMessage
 
-  const defaultSx = {
-    width: '100%',
-    backgroundColor: disabled ? COLORS.GRAY_100 : COLORS.WHITE,
-    border: `1px solid ${isError ? COLORS.ERROR : COLORS.GRAY_300}`,
-    borderRadius: '8px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    transition: 'all 0.2s ease-in-out',
-    boxShadow: isOpen
-      ? '0px 0px 0px 4px rgba(0, 119, 198, 0.1)'
-      : '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
-    '&:hover': {
-      borderColor: disabled ? COLORS.GRAY_300 : (isError ? COLORS.ERROR : COLORS.GRAY_400),
-    },
-    '&:focus-within': {
-      borderColor: isError ? COLORS.ERROR : COLORS.PRIMARY,
-      boxShadow: `0px 0px 0px 4px ${COLORS.PRIMARY_10}`,
-    },
-    ...sx,
+  // Enhanced Material-UI styling with theme integration
+  const getVariantStyles = () => {
+    const baseStyles = {
+      width: '100%',
+      backgroundColor: disabled ? alpha(theme.palette.action.disabled, 0.12) : theme.palette.background.paper,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: theme.transitions.create(['border-color', 'box-shadow'], {
+        duration: theme.transitions.duration.shorter,
+      }),
+    }
+
+    switch (variant) {
+      case 'filled':
+        return {
+          ...baseStyles,
+          backgroundColor: disabled 
+            ? alpha(theme.palette.action.disabled, 0.12)
+            : alpha(theme.palette.text.primary, 0.06),
+          borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+          border: 'none',
+          borderBottom: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
+          '&:hover': {
+            backgroundColor: disabled 
+              ? alpha(theme.palette.action.disabled, 0.12)
+              : alpha(theme.palette.text.primary, 0.09),
+          },
+          '&:focus-within': {
+            borderBottomColor: isError ? theme.palette.error.main : theme.palette.primary.main,
+            borderBottomWidth: '2px',
+          },
+        }
+      case 'standard':
+        return {
+          ...baseStyles,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderBottom: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
+          borderRadius: 0,
+          '&:hover': {
+            borderBottomColor: disabled 
+              ? theme.palette.divider 
+              : (isError ? theme.palette.error.main : theme.palette.text.primary),
+          },
+          '&:focus-within': {
+            borderBottomColor: isError ? theme.palette.error.main : theme.palette.primary.main,
+            borderBottomWidth: '2px',
+          },
+        }
+      default: // outlined
+        return {
+          ...baseStyles,
+          border: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: isOpen
+            ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`
+            : 'none',
+          '&:hover': {
+            borderColor: disabled 
+              ? theme.palette.divider 
+              : (isError ? theme.palette.error.main : theme.palette.text.primary),
+          },
+          '&:focus-within': {
+            borderColor: isError ? theme.palette.error.main : theme.palette.primary.main,
+            boxShadow: `0 0 0 2px ${alpha(isError ? theme.palette.error.main : theme.palette.primary.main, 0.2)}`,
+          },
+        }
+    }
+  }
+
+  // Native Select for better performance with large datasets
+  if (type === 'native-select') {
+    return (
+      <FormControl 
+        fullWidth={fullWidth}
+        margin={margin}
+        error={isError}
+        disabled={disabled}
+        required={required}
+        sx={containerSx}
+      >
+        {label && (
+          <InputLabel sx={labelSx}>
+            {label}
+          </InputLabel>
+        )}
+        <Select
+          native
+          value={selectedValues[0] || ''}
+          onChange={(e) => {
+            const selectedOption = options.find(opt => opt.value === e.target.value)
+            if (selectedOption) {
+              handleOptionSelect(selectedOption)
+            }
+          }}
+          input={<OutlinedInput label={label} />}
+          sx={sx}
+        >
+          <option value="">{placeholder}</option>
+          {options.map(option => (
+            <option 
+              key={option.value} 
+              value={option.value}
+              disabled={option.disabled}
+            >
+              {option.label}
+            </option>
+          ))}
+        </Select>
+        {(supportingText || errorMessage) && (
+          <FormHelperText>
+            {isError ? errorMessage : supportingText}
+          </FormHelperText>
+        )}
+      </FormControl>
+    )
   }
 
   return (
-    <Box sx={{ mb: 2, ...containerSx }}>
+    <FormControl 
+      fullWidth={fullWidth}
+      margin={margin}
+      error={isError}
+      disabled={disabled}
+      required={required}
+      sx={containerSx}
+    >
       {/* Label */}
       {label && (
-        <Typography
-          variant="body1"
+        <FormLabel
           sx={{
             fontWeight: 500,
-            color: isError ? COLORS.ERROR : COLORS.GRAY_700,
-            mb: 1.5,
+            color: isError ? theme.palette.error.main : theme.palette.text.primary,
+            mb: 1,
             fontSize: 16,
             lineHeight: 1.5,
             ...labelSx,
           }}
         >
-          {label}{required && <Typography component="span" sx={{ color: COLORS.ERROR, ml: 0.5 }}>*</Typography>}
-        </Typography>
+          {label}
+          {required && (
+            <Typography component="span" sx={{ color: theme.palette.error.main, ml: 0.5 }}>
+              *
+            </Typography>
+          )}
+        </FormLabel>
       )}
 
-      {/* Main Box */}
+      {/* Main Dropdown Box */}
       <Box
         ref={dropdownRef}
-        sx={defaultSx}
+        sx={{
+          ...getVariantStyles(),
+          ...sx,
+        }}
         onClick={handleClick}
         role="button"
         tabIndex={0}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={label || placeholder}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
@@ -241,7 +448,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           }
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', height: sizeStyles.height, padding: sizeStyles.padding, gap: 1 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          height: sizeStyles.height, 
+          padding: sizeStyles.padding, 
+          gap: 1 
+        }}>
           {/* Leading Icon */}
           {(showLeadingIcon || leadingIcon) && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -251,7 +464,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           {/* Avatar for avatar-leading */}
           {type === 'avatar-leading' && !multiple && getSelectedOptions()[0]?.avatar && (
-            <Avatar src={getSelectedOptions()[0].avatar} sx={{ width: 24, height: 24, fontSize: 12 }}>
+            <Avatar 
+              src={getSelectedOptions()[0].avatar} 
+              sx={{ 
+                width: parseInt(getIconSize()), 
+                height: parseInt(getIconSize()), 
+                fontSize: parseInt(getIconSize()) / 2 
+              }}
+            >
               {getSelectedOptions()[0].label.charAt(0)}
             </Avatar>
           )}
@@ -268,8 +488,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                     sx={{
                       height: 24,
                       fontSize: 12,
-                      backgroundColor: COLORS.PRIMARY_10,
-                      color: COLORS.PRIMARY,
+                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                      color: theme.palette.primary.main,
                     }}
                   />
                 ))}
@@ -277,7 +497,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   <Chip
                     label={`+${selectedValues.length - 2}`}
                     size="small"
-                    sx={{ height: 24, fontSize: 12, backgroundColor: COLORS.GRAY_200, color: COLORS.GRAY_600 }}
+                    sx={{ 
+                      height: 24, 
+                      fontSize: 12, 
+                      backgroundColor: alpha(theme.palette.text.primary, 0.1), 
+                      color: theme.palette.text.secondary 
+                    }}
                   />
                 )}
               </Box>
@@ -285,13 +510,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               <Typography
                 sx={{
                   fontSize: sizeStyles.fontSize,
-                  color: disabled ? COLORS.GRAY_400 : (selectedValues.length > 0 ? COLORS.GRAY_900 : COLORS.GRAY_500),
+                  color: disabled 
+                    ? theme.palette.text.disabled 
+                    : (selectedValues.length > 0 ? theme.palette.text.primary : theme.palette.text.secondary),
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                 }}
               >
-                {displayText}
+                {loading ? loadingText : displayText}
               </Typography>
             )}
           </Box>
@@ -301,23 +528,47 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             <Chip
               label="New"
               size="small"
-              sx={{ height: 20, fontSize: 10, backgroundColor: COLORS.SECONDARY, color: COLORS.WHITE, fontWeight: 500 }}
+              sx={{ 
+                height: 20, 
+                fontSize: 10, 
+                backgroundColor: theme.palette.secondary.main, 
+                color: theme.palette.secondary.contrastText, 
+                fontWeight: 500 
+              }}
             />
           )}
 
+          {/* Clear Button */}
+          {clearable && selectedValues.length > 0 && !disabled && (
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation()
+                handleClear()
+              }}
+              sx={{ p: 0.5 }}
+            >
+              <Search sx={{ fontSize: '16px' }} />
+            </IconButton>
+          )}
+
           {/* Trailing Icon */}
-          {showTrailingIcon && <Box sx={{ display: 'flex', alignItems: 'center' }}>{trailingIcon || getDefaultTrailingIcon()}</Box>}
+          {showTrailingIcon && (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {trailingIcon || getDefaultTrailingIcon()}
+            </Box>
+          )}
         </Box>
       </Box>
 
       {/* Supporting / Error Text */}
       {(supportingText || errorMessage) && (
-        <Typography sx={{ fontSize: 14, color: isError ? COLORS.ERROR : COLORS.GRAY_600, mt: '6px', fontWeight: 400 }}>
+        <FormHelperText sx={{ mt: 1 }}>
           {isError ? errorMessage : supportingText}
-        </Typography>
+        </FormHelperText>
       )}
 
-      {/* Dropdown Menu */}
+      {/* Enhanced Dropdown Menu */}
       <Menu
         anchorEl={anchorEl}
         open={isOpen}
@@ -325,19 +576,29 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         PaperProps={{
           sx: {
             minWidth: dropdownRef.current?.offsetWidth || 200,
-            maxHeight: 300,
-            borderRadius: 2,
-            boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
-            border: `1px solid ${COLORS.GRAY_200}`,
-            mt: 1,
+            maxHeight: virtualized ? 400 : 300,
+            borderRadius: theme.shape.borderRadius,
+            boxShadow: theme.shadows[8],
+            backgroundColor: theme.palette.background.paper,
+            border: `1px solid ${theme.palette.divider}`,
+            mt: 0.5,
+            ...menuProps,
           },
         }}
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        MenuListProps={{
+          sx: {
+            padding: 0,
+          }
+        }}
       >
         {/* Search */}
         {type === 'search' && (
-          <Box sx={{ p: 1, borderBottom: `1px solid ${COLORS.GRAY_200}` }}>
+          <Box sx={{ 
+            padding: theme.spacing(1), 
+            borderBottom: `1px solid ${theme.palette.divider}`
+          }}>
             <TextField
               fullWidth
               placeholder={searchPlaceholder}
@@ -347,17 +608,17 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search sx={{ fontSize: 20, color: COLORS.GRAY_500 }} />
+                    <Search sx={{ fontSize: 20, color: theme.palette.text.secondary }} />
                   </InputAdornment>
                 ),
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: 40,
-                  fontSize: 14,
-                  '& fieldset': { borderColor: COLORS.GRAY_300 },
-                  '&:hover fieldset': { borderColor: COLORS.GRAY_400 },
-                  '&.Mui-focused fieldset': { borderColor: COLORS.PRIMARY },
+                  fontSize: '14px',
+                  '& fieldset': { borderColor: theme.palette.divider },
+                  '&:hover fieldset': { borderColor: theme.palette.text.secondary },
+                  '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
                 },
               }}
             />
@@ -365,67 +626,245 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         )}
 
         {/* Options */}
-        {filteredOptions.length > 0 ? (
-          filteredOptions.map(option => (
-            <MenuItem
-              key={option.value}
-              onClick={() => handleOptionSelect(option)}
-              disabled={option.disabled}
-              sx={{
-                py: 1.5,
-                px: 2,
-                fontSize: 16,
-                color: option.disabled ? COLORS.GRAY_400 : COLORS.GRAY_900,
-                '&:hover': { backgroundColor: COLORS.PRIMARY_10 },
-                '&.Mui-selected': {
-                  backgroundColor: COLORS.PRIMARY_10,
-                  '&:hover': { backgroundColor: COLORS.PRIMARY_20 },
-                },
-              }}
-            >
-              {/* Selection Icon */}
-              <ListItemIcon sx={{ minWidth: 32 }}>
-                {multiple ? (
-                  isSelected(option.value) ? (
-                    <Check sx={{ fontSize: 20, color: COLORS.PRIMARY }} />
-                  ) : (
-                    <RadioButtonUnchecked sx={{ fontSize: 20, color: COLORS.GRAY_400 }} />
-                  )
-                ) : (
-                  isSelected(option.value) && <Check sx={{ fontSize: 20, color: COLORS.PRIMARY }} />
+        {loading ? (
+          <MenuItem disabled sx={{ justifyContent: 'center', py: 2 }}>
+            <Typography sx={{ color: theme.palette.text.secondary }}>
+              {loadingText}
+            </Typography>
+          </MenuItem>
+        ) : filteredOptions.length > 0 ? (
+          groupBy ? (
+            Object.entries(groupedOptions).map(([groupName, groupOptions]) => (
+              <Box key={groupName}>
+                {groupName && (
+                  <Typography
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      color: theme.palette.text.secondary,
+                      backgroundColor: alpha(theme.palette.text.primary, 0.04),
+                    }}
+                  >
+                    {groupName}
+                  </Typography>
                 )}
-              </ListItemIcon>
+                {groupOptions.map((option, index) => (
+                  <Box key={option.value}>
+                    <MenuItem
+                      onClick={() => handleOptionSelect(option)}
+                      disabled={option.disabled}
+                      selected={isSelected(option.value)}
+                      sx={{
+                        py: 1.5,
+                        px: 2,
+                        fontSize: '14px',
+                        fontFamily: 'Figtree',
+                        color: option.disabled 
+                          ? theme.palette.text.disabled 
+                          : (option.value === 'logout' ? '#B1000F' : theme.palette.text.primary),
+                        '&:hover': { 
+                          backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                          '&:hover': { 
+                            backgroundColor: alpha(theme.palette.primary.main, 0.16),
+                          },
+                        },
+                      }}
+                    >
+                      {/* Selection Icon */}
+                      <ListItemIcon sx={{ minWidth: 32 }}>
+                        {multiple ? (
+                          isSelected(option.value) ? (
+                            <Check sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+                          ) : (
+                            <RadioButtonUnchecked sx={{ fontSize: 20, color: theme.palette.text.disabled }} />
+                          )
+                        ) : (
+                          isSelected(option.value) && <Check sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+                        )}
+                      </ListItemIcon>
 
-              {/* Avatar */}
-              {type === 'avatar-leading' && (
-                <Avatar src={option.avatar} sx={{ width: 24, height: 24, fontSize: 12, mr: 1 }}>
-                  {option.label.charAt(0)}
-                </Avatar>
-              )}
+                      {/* Avatar */}
+                      {type === 'avatar-leading' && option.avatar && (
+                        <Avatar 
+                          src={option.avatar} 
+                          sx={{ 
+                            width: 24, 
+                            height: 24, 
+                            fontSize: 12, 
+                            mr: 1 
+                          }}
+                        >
+                          {option.label.charAt(0)}
+                        </Avatar>
+                      )}
 
-              {/* Option Icon */}
-              {option.icon && <ListItemIcon sx={{ minWidth: 32 }}>{option.icon}</ListItemIcon>}
+                      {/* Option Icon */}
+                      {option.icon && (
+                        <ListItemIcon sx={{ 
+                          minWidth: '26px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start'
+                        }}>
+                          {option.icon}
+                        </ListItemIcon>
+                      )}
 
-              {/* Text */}
-              <ListItemText primary={option.label} sx={{ '& .MuiListItemText-primary': { fontSize: 16, fontWeight: 400 } }} />
+                      {/* Text */}
+                      <ListItemText 
+                        primary={option.label} 
+                        sx={{ 
+                          '& .MuiListItemText-primary': { 
+                            fontSize: '14px',
+                            fontFamily: 'Figtree',
+                            fontWeight: 400,
+                            lineHeight: '1.2em',
+                            color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary,
+                          } 
+                        }} 
+                      />
 
-              {/* Badge */}
-              {option.badge && (
-                <Chip
-                  label={option.badge}
-                  size="small"
-                  sx={{ height: 20, fontSize: 10, backgroundColor: COLORS.SECONDARY, color: COLORS.WHITE, fontWeight: 500 }}
-                />
-              )}
-            </MenuItem>
-          ))
+                      {/* Badge */}
+                      {option.badge && (
+                        <Chip
+                          label={option.badge}
+                          size="small"
+                          sx={{ 
+                            height: 20, 
+                            fontSize: 10, 
+                            backgroundColor: theme.palette.secondary.main, 
+                            color: theme.palette.secondary.contrastText, 
+                            fontWeight: 500 
+                          }}
+                        />
+                      )}
+                    </MenuItem>
+                    {option.divider && <Divider />}
+                  </Box>
+                ))}
+              </Box>
+            ))
+          ) : (
+            filteredOptions.map(option => (
+              <Box key={option.value}>
+                <MenuItem
+                  onClick={() => handleOptionSelect(option)}
+                  disabled={option.disabled}
+                  selected={isSelected(option.value)}
+                  sx={{
+                    py: 1.5,
+                    px: 2,
+                    fontSize: '14px',
+                    fontFamily: 'Figtree',
+                    color: option.disabled 
+                      ? theme.palette.text.disabled 
+                      : (option.value === 'logout' ? '#B1000F' : theme.palette.text.primary),
+                    '&:hover': { 
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    },
+                    '&.Mui-selected': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                      '&:hover': { 
+                        backgroundColor: alpha(theme.palette.primary.main, 0.16),
+                      },
+                    },
+                  }}
+                >
+                  {/* Selection Icon */}
+                  <ListItemIcon sx={{ minWidth: 32 }}>
+                    {multiple ? (
+                      isSelected(option.value) ? (
+                        <Check sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+                      ) : (
+                        <RadioButtonUnchecked sx={{ fontSize: 20, color: theme.palette.text.disabled }} />
+                      )
+                    ) : (
+                      isSelected(option.value) && <Check sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+                    )}
+                  </ListItemIcon>
+
+                  {/* Avatar */}
+                  {type === 'avatar-leading' && option.avatar && (
+                    <Avatar 
+                      src={option.avatar} 
+                      sx={{ 
+                        width: 24, 
+                        height: 24, 
+                        fontSize: 12, 
+                        mr: 1 
+                      }}
+                    >
+                      {option.label.charAt(0)}
+                    </Avatar>
+                  )}
+
+                  {/* Option Icon */}
+                  {option.icon && (
+                    <ListItemIcon sx={{ 
+                      minWidth: '26px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start'
+                    }}>
+                      {option.icon}
+                    </ListItemIcon>
+                  )}
+
+                  {/* Text */}
+                  <ListItemText 
+                    primary={option.label} 
+                    sx={{ 
+                      '& .MuiListItemText-primary': { 
+                        fontSize: '14px',
+                        fontFamily: 'Figtree',
+                        fontWeight: 400,
+                        lineHeight: '1.2em',
+                        color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary,
+                      } 
+                    }} 
+                  />
+
+                  {/* Badge */}
+                  {option.badge && (
+                    <Chip
+                      label={option.badge}
+                      size="small"
+                      sx={{ 
+                        height: 20, 
+                        fontSize: 10, 
+                        backgroundColor: theme.palette.secondary.main, 
+                        color: theme.palette.secondary.contrastText, 
+                        fontWeight: 500 
+                      }}
+                    />
+                  )}
+                </MenuItem>
+                {option.divider && <Divider />}
+              </Box>
+            ))
+          )
         ) : (
-          <MenuItem disabled sx={{ py: 2, px: 2, textAlign: 'center' }}>
-            <Typography sx={{ color: COLORS.GRAY_500, fontSize: 14 }}>No options found</Typography>
+          <MenuItem disabled sx={{ 
+            justifyContent: 'center',
+            py: 2
+          }}>
+            <Typography sx={{ 
+              fontSize: '14px',
+              fontFamily: 'Figtree',
+              fontWeight: 400,
+              color: theme.palette.text.secondary
+            }}>
+              {noOptionsText}
+            </Typography>
           </MenuItem>
         )}
       </Menu>
-    </Box>
+    </FormControl>
   )
 }
 
