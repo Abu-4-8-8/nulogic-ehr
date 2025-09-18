@@ -29,9 +29,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       href: '/billing',
       type: 'dropdown',
       items: [
-        { label: 'Invoices', href: '/billing/invoices' },
-        { label: 'Payments', href: '/billing/payments' },
-        { label: 'Reports', href: '/billing/reports' }
+        { label: 'Billing', href: '/billing' },
+        { label: 'Patient Payment', href: '/billing/patient-payment' }
       ]
     },
     {
