@@ -3,9 +3,9 @@ import React, { forwardRef } from 'react'
 import {
   TextField,
   Box,
-  Typography,
   InputAdornment,
   IconButton,
+  Typography,
 } from '@mui/material'
 import type { TextFieldProps } from "@mui/material"; 
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -21,7 +21,6 @@ export interface CustomInputProps extends Omit<TextFieldProps, 'variant'> {
   endIcon?: React.ReactNode
   showPasswordToggle?: boolean
   containerSx?: object
-  labelSx?: object
   variant?: 'outlined' | 'filled' | 'standard'
 }
 
@@ -39,7 +38,6 @@ const CustomInput = forwardRef<HTMLDivElement, CustomInputProps>(
       showPasswordToggle = false,
       type = 'text',
       containerSx = {},
-      labelSx = {},
       variant = 'outlined',
       sx = {},
       ...props
@@ -173,7 +171,6 @@ const CustomInput = forwardRef<HTMLDivElement, CustomInputProps>(
               mb: 1.5,
               fontSize: '16px',
               lineHeight: 1.5,
-              ...labelSx,
             }}
           >
             {label}
@@ -189,6 +186,7 @@ const CustomInput = forwardRef<HTMLDivElement, CustomInputProps>(
           helperText={isError ? errorMessage : helperText}
           InputProps={getInputProps()}
           sx={defaultSx}
+          // label={label}
           {...props}
         />
       </Box>

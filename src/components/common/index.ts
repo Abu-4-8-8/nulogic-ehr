@@ -10,7 +10,14 @@ export type { CustomAvatarProps } from './CustomAvatar'
 export { default as CustomDropdown } from './CustomDropdown'
 export type { CustomDropdownProps, DropdownOption } from './CustomDropdown'
 
+export { default as CustomLabel } from './CustomLabel'
+export type { CustomLabelProps } from './CustomLabel'
+
+export { default as CustomDialog } from './CustomDialog'
+export type { CustomDialogProps } from './CustomDialog'
+
 export { default as CustomRadioButton } from './CustomRadioButton'
+export { default as CustomUpload } from './CustomUpload'
 export type { CustomRadioButtonProps } from './CustomRadioButton'
 
 export { default as CustomCheckbox } from './CustomCheckbox'
