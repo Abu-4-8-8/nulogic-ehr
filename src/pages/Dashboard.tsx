@@ -1,160 +1,147 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Box,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material'
-import {
-  Person,
-  Schedule,
-  AccountCircle,
-  Notifications,
-} from '@mui/icons-material'
-import NuLogicLogo from '../components/ui/NuLogicLogo'
+import { Box, Typography } from '@mui/material'
+import MainLayout from '../components/layouts/MainLayout'
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate()
-  const { user, logout } = useAuth()
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleLogout = () => {
-    handleClose()
-    logout()
-    navigate('/login')
-  }
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      {/* Header */}
-      <AppBar position="static">
-        <Toolbar>
-          <Box sx={{ mr: 2 }}>
-            <NuLogicLogo size="small" showText={false} />
-          </Box>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            EHR System - Welcome, {user?.name || user?.email}
+    <MainLayout>
+      {/* Main content area */}
+      <Box
+        sx={{
+          // Content card with white background and shadow - inspired by Figma design
+          backgroundColor: '#FFFFFF',
+          borderRadius: '8px',
+          boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.12)', // Shadow from Figma
+          padding: {
+            xs: '16px', // Mobile padding
+            // sm: '24px', // Larger screens - matches Figma content padding
+          },
+          flex: 1,
+        }}
+      >
+        {/* Page header */}
+        <Box
+          sx={{
+            borderBottom: '1px solid #DBDBDB', // Neutral/10 from Figma
+            paddingBottom: '16px',
+            marginBottom: '24px',
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: 'Figtree',
+              fontWeight: 600,
+              fontSize: {
+                xs: '20px',
+                sm: '24px',
+              },
+              lineHeight: '1.2em',
+              color: '#21262B', // Neutral/80 from Figma
+              margin: 0,
+            }}
+          >
+            Welcome to Dashboard
           </Typography>
           
-          <IconButton color="inherit">
-            <Notifications />
-          </IconButton>
+          <Typography
+            sx={{
+              fontFamily: 'Figtree',
+              fontWeight: 400,
+              fontSize: '14px',
+              lineHeight: '1.2em',
+              color: '#595F63', // Neutral/60 from Figma
+              marginTop: '8px',
+            }}
+          >
+            This is a sample dashboard page using the MainLayout component.
+          </Typography>
+        </Box>
+
+        {/* Sample content */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: 'Figtree',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '1.2em',
+              color: '#21262B', // Neutral/80 from Figma
+            }}
+          >
+            Dashboard Content
+          </Typography>
           
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+          <Typography
+            sx={{
+              fontFamily: 'Figtree',
+              fontWeight: 400,
+              fontSize: '14px',
+              lineHeight: '1.4em',
+              color: '#595F63', // Neutral/60 from Figma
             }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>Settings</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
+            This layout provides proper spacing and centering for your content. 
+            The design is inspired by the Figma layout structure with consistent 
+            padding, margins, and responsive behavior.
+          </Typography>
 
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          {/* Welcome Card */}
-          <Grid size={{ xs: 12 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h4" gutterBottom>
-                  Welcome to NuLogic EHR System
+          {/* Sample content sections */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              },
+              gap: '16px',
+              marginTop: '24px',
+            }}
+          >
+            {[1, 2, 3].map((item) => (
+              <Box
+                key={item}
+                sx={{
+                  backgroundColor: '#F5F5F5', // Neutral/1 from Figma
+                  borderRadius: '6px',
+                  padding: '16px',
+                  border: '1px solid #E7E7E7', // Neutral/5 from Figma
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontFamily: 'Figtree',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    color: '#21262B',
+                    marginBottom: '8px',
+                  }}
+                >
+                  Sample Card {item}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  You are successfully logged in as: <strong>{user?.email}</strong>
+                <Typography
+                  sx={{
+                    fontFamily: 'Figtree',
+                    fontWeight: 400,
+                    fontSize: '12px',
+                    color: '#595F63',
+                  }}
+                >
+                  This is sample content for card {item}.
                 </Typography>
-                <Box sx={{ mt: 2 }}>
-                  <Chip 
-                    label="Authenticated" 
-                    color="success" 
-                    variant="outlined"
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Quick Actions */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Patient Management
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Manage patient records and appointments
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" startIcon={<Person />}>
-                  View Patients
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Appointments
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Schedule and manage appointments
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" startIcon={<Schedule />}>
-                  View Schedule
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </Box>
+    </MainLayout>
   )
 }
 

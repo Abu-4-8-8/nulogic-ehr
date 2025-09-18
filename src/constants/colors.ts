@@ -44,7 +44,13 @@ export const COLORS = {
   WARNING: '#ed6c02',
   INFO: '#0288d1',
   
-  // Neutral colors
+  // Neutral colors (from Figma)
+  NEUTRAL_80: '#21262B', // Main text color from Figma
+  NEUTRAL_5: '#E7E7E7',  // Border color from Figma
+  NEUTRAL_ICON: '#373E41', // Icon color from Figma
+  ACTIVE_BG: '#EEF7FE',   // Active background from Figma
+  
+  // Legacy neutral colors
   DEFAULT: '#6b7280',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
