@@ -1,0 +1,5 @@
+export { default as Demographics } from './Demographics'
+export { default as ContactInformation } from './ContactInformation'
+export { default as EmergencyContact } from './EmergencyContact'
+export { default as InsuranceInformation } from './InsuranceInformation'
+export { default as Other } from './Other'

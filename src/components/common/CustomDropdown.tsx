@@ -1,12 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {
-  Box, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText,
-  Avatar, Chip, TextField, InputAdornment, FormControl, FormLabel,
-  FormHelperText, Select, OutlinedInput, InputLabel, Divider, useTheme, alpha
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  Chip,
+  TextField,
+  InputAdornment,
+  FormControl,
+  FormHelperText,
+  Select,
+  OutlinedInput,
+  InputLabel,
+  Divider,
+  useTheme,
+  alpha,
 } from '@mui/material'
 import {
-  Search, Check, RadioButtonUnchecked, AccountCircle, ExpandMore
+  Search,
+  Check,
+  RadioButtonUnchecked,
+  AccountCircle,
+  ExpandMore,
 } from '@mui/icons-material'
+import { COLORS } from '../../constants/colors'
 
 export interface DropdownOption {
   value: string | number
@@ -81,7 +102,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   
   // Size and Variants
   size = 'medium',
-  variant = 'outlined',
   
   // Types and Features
   type = 'default',
@@ -116,7 +136,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   // Material-UI Integration
   fullWidth = true,
   margin = 'normal',
-  }) => {
+}) => {
   const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -239,75 +259,25 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     opt.label.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const sizeStyles = getSizeStyles()
   const isError = error || !!errorMessage
 
-  // Enhanced Material-UI styling with theme integration
+  // Match CustomInput styling exactly
   const getVariantStyles = () => {
-    const baseStyles = {
-      width: '100%',
-      backgroundColor: disabled ? alpha(theme.palette.action.disabled, 0.12) : theme.palette.background.paper,
+    return {
+      backgroundColor: '#FFFFFF !important',
+      borderRadius: '8px',
+      height: '56px',
+      fontSize: '16px',
+      boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+      border: `1px solid ${isError ? '#DC2626' : '#C9CBCC'}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
-      transition: theme.transitions.create(['border-color', 'box-shadow'], {
-        duration: theme.transitions.duration.shorter,
-      }),
-    }
-
-    switch (variant) {
-      case 'filled':
-        return {
-          ...baseStyles,
-          backgroundColor: disabled 
-            ? alpha(theme.palette.action.disabled, 0.12)
-            : alpha(theme.palette.text.primary, 0.06),
-          borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
-          border: 'none',
-          borderBottom: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
-          '&:hover': {
-            backgroundColor: disabled 
-              ? alpha(theme.palette.action.disabled, 0.12)
-              : alpha(theme.palette.text.primary, 0.09),
-          },
-          '&:focus-within': {
-            borderBottomColor: isError ? theme.palette.error.main : theme.palette.primary.main,
-            borderBottomWidth: '2px',
-          },
-        }
-      case 'standard':
-        return {
-          ...baseStyles,
-          backgroundColor: 'transparent',
-          border: 'none',
-          borderBottom: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
-          borderRadius: 0,
-          '&:hover': {
-            borderBottomColor: disabled 
-              ? theme.palette.divider 
-              : (isError ? theme.palette.error.main : theme.palette.text.primary),
-          },
-          '&:focus-within': {
-            borderBottomColor: isError ? theme.palette.error.main : theme.palette.primary.main,
-            borderBottomWidth: '2px',
-          },
-        }
-      default: // outlined
-        return {
-          ...baseStyles,
-          border: `1px solid ${isError ? theme.palette.error.main : theme.palette.divider}`,
-          borderRadius: theme.shape.borderRadius,
-          boxShadow: isOpen
-            ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`
-            : 'none',
-          '&:hover': {
-            borderColor: disabled 
-              ? theme.palette.divider 
-              : (isError ? theme.palette.error.main : theme.palette.text.primary),
-          },
-          '&:focus-within': {
-            borderColor: isError ? theme.palette.error.main : theme.palette.primary.main,
-            boxShadow: `0 0 0 2px ${alpha(isError ? theme.palette.error.main : theme.palette.primary.main, 0.2)}`,
-          },
-        }
+      '&:hover': {
+        borderColor: isError ? '#DC2626' : COLORS.NEUTRAL_30,
+      },
+      '&:focus-within': {
+        borderColor: isError ? '#DC2626' : COLORS.PRIMARY_70,
+        borderWidth: '1px',
+      },
     }
   }
 
@@ -360,22 +330,16 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   }
 
   return (
-    <FormControl 
-      fullWidth={fullWidth}
-      margin={margin}
-      error={isError}
-      disabled={disabled}
-      required={required}
-      sx={containerSx}
-    >
-      {/* Label */}
+    <Box sx={{ mb: 2, ...containerSx }}>
+      {/* Label - Match CustomInput styling */}
       {label && (
-        <FormLabel
+        <Typography
+          variant="body1"
           sx={{
-            fontWeight: 500,
-            color: isError ? theme.palette.error.main : theme.palette.text.primary,
-            mb: 1,
-            fontSize: 16,
+            fontWeight: '500',
+            color: '#374151',
+            mb: 1.5,
+            fontSize: '16px',
             lineHeight: 1.5,
             ...labelSx,
           }}
@@ -386,8 +350,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               *
             </Typography>
           )}
-        </FormLabel>
+        </Typography>
       )}
+
+      <FormControl 
+        fullWidth={fullWidth}
+        error={isError}
+        disabled={disabled}
+        required={required}
+      >
 
       {/* Main Dropdown Box */}
       <Box
@@ -409,7 +380,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           }
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', height: sizeStyles.height, padding: sizeStyles.padding, gap: 1 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          height: '56px', 
+          padding: '16px 14px', 
+          gap: 1 
+        }}>
           {/* Leading Icon */}
           {(showLeadingIcon || leadingIcon) && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -450,10 +427,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             ) : (
               <Typography
                 sx={{
-                  fontSize: sizeStyles.fontSize,
+                  fontSize: '16px',
                   color: disabled 
-                    ? theme.palette.text.disabled 
-                    : (selectedValues.length > 0 ? theme.palette.text.primary : theme.palette.text.secondary),
+                    ? '#9ca3af' 
+                    : (selectedValues.length > 0 ? '#374151' : '#9ca3af'),
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -498,10 +475,18 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Supporting / Error Text */}
       {(supportingText || errorMessage) && (
-        <FormHelperText sx={{ mt: 1 }}>
+        <FormHelperText sx={{ 
+          mt: 1,
+          color: isError ? '#DC2626' : '#666',
+          fontSize: '14px',
+          marginTop: '6px',
+          marginLeft: '0px',
+          fontWeight: '400',
+        }}>
           {isError ? errorMessage : supportingText}
         </FormHelperText>
       )}
+      </FormControl>
 
       {/* Enhanced Dropdown Menu */}
       <Menu
@@ -704,7 +689,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           </MenuItem>
         )}
       </Menu>
-    </FormControl>
+    </Box>
   )
 }
 

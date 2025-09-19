@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react'
-import { Avatar, Box, Typography } from '@mui/material'
+import React, { forwardRef, useRef } from 'react'
+import { Avatar, Box, Typography, IconButton, Tooltip } from '@mui/material'
+import { PhotoCamera } from '@mui/icons-material'
 import type { AvatarProps } from '@mui/material'
 import { COLORS } from '../../constants/colors'
 
@@ -25,6 +26,15 @@ export interface CustomAvatarProps extends Omit<AvatarProps, 'variant'> {
   showStatus?: boolean
   clickable?: boolean
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
+  // File upload props
+  allowUpload?: boolean
+  onFileSelect?: (file: File) => void
+  acceptedFileTypes?: string
+  maxFileSize?: number // in MB
+  uploadTooltip?: string
+  showUploadIcon?: boolean
+  uploadIconPosition?: 'center' | 'bottom-right'
+  disabled?: boolean
 }
 
 const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
@@ -51,11 +61,51 @@ const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
       showStatus = false,
       clickable = false,
       onClick,
+      // File upload props
+      allowUpload = false,
+      onFileSelect,
+      acceptedFileTypes = 'image/*',
+      maxFileSize = 5, // 5MB default
+      uploadTooltip = 'Upload image',
+      showUploadIcon = true,
+      uploadIconPosition = 'bottom-right',
+      disabled = false,
       sx = {},
       ...props
     },
     ref
   ) => {
+    const fileInputRef = useRef<HTMLInputElement>(null)
+
+    // File upload handlers
+    const handleFileInputClick = () => {
+      if (allowUpload && !disabled && fileInputRef.current) {
+        fileInputRef.current.click()
+      }
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0]
+      if (file && onFileSelect) {
+        // Validate file type
+        if (!file.type.match(acceptedFileTypes.replace('*', '.*'))) {
+          console.error('Invalid file type. Please select an image file.')
+          return
+        }
+
+        // Validate file size
+        const fileSizeInMB = file.size / (1024 * 1024)
+        if (fileSizeInMB > maxFileSize) {
+          console.error(`File size too large. Maximum size is ${maxFileSize}MB.`)
+          return
+        }
+
+        onFileSelect(file)
+      }
+      // Reset input value to allow selecting the same file again
+      event.target.value = ''
+    }
+
     // Get initials from name
     const getInitials = (fullName?: string) => {
       if (!fullName) return ''
@@ -117,10 +167,11 @@ const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
       fontWeight: '600',
       backgroundColor: avatarColor,
       color: '#FFFFFF',
-      cursor: clickable ? 'pointer' : 'default',
+      cursor: (clickable || allowUpload) && !disabled ? 'pointer' : 'default',
       transition: 'all 0.2s ease-in-out',
       position: 'relative',
-      '&:hover': clickable ? {
+      opacity: disabled ? 0.6 : 1,
+      '&:hover': (clickable || allowUpload) && !disabled ? {
         transform: 'scale(1.05)',
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
       } : {},
@@ -164,6 +215,37 @@ const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
         case 'center':
         default:
           return { ...baseStyles, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+      }
+    }
+
+    const getUploadIconStyles = () => {
+      const iconSize = avatarSize * 0.25
+      const baseStyles = {
+        position: 'absolute',
+        width: iconSize,
+        height: iconSize,
+        backgroundColor: COLORS.PRIMARY,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#FFFFFF',
+        border: '2px solid #FFFFFF',
+        zIndex: 3,
+        cursor: 'pointer',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          backgroundColor: COLORS.PRIMARY_DARK || COLORS.PRIMARY,
+          transform: 'scale(1.1)',
+        },
+      }
+
+      switch (uploadIconPosition) {
+        case 'center':
+          return { ...baseStyles, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+        case 'bottom-right':
+        default:
+          return { ...baseStyles, bottom: -2, right: -2 }
       }
     }
 
@@ -270,12 +352,38 @@ const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
           position: 'relative',
           ...containerSx,
         }}
-        onClick={clickable ? onClick : undefined}
+        onClick={clickable && !allowUpload ? onClick : undefined}
       >
         <Box sx={{ position: 'relative', display: 'inline-block' }}>
           {renderAvatar()}
+          
+          {/* Status Indicator */}
           {showStatus && (
             <Box sx={statusIndicatorStyles} />
+          )}
+          
+          {/* Upload Icon */}
+          {allowUpload && showUploadIcon && !disabled && (
+            <Tooltip title={uploadTooltip} arrow>
+              <IconButton
+                sx={getUploadIconStyles()}
+                onClick={handleFileInputClick}
+                size="small"
+              >
+                <PhotoCamera sx={{ fontSize: avatarSize * 0.15 }} />
+              </IconButton>
+            </Tooltip>
+          )}
+          
+          {/* Hidden File Input */}
+          {allowUpload && (
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={acceptedFileTypes}
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
           )}
         </Box>
         
