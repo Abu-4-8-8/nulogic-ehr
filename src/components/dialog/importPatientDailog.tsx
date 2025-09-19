@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Typography, IconButton } from '@mui/material'
-import { Close, Download } from '@mui/icons-material'
+import { Close } from '@mui/icons-material'
 import CustomDialog from '../widgets/CustomDialog'
 import CustomDropdown from '../custom-fields/CustomDropdown'
 import CustomButton from '../custom-fields/CustomButton'
@@ -39,17 +39,6 @@ const ImportPatientDialog: React.FC<ImportPatientDialogProps> = ({
     setSelectedFiles(prev => prev.filter((_, i) => i !== index))
   }
 
-  const handleDownloadTemplate = () => {
-    // Create a simple CSV template
-    const csvContent = 'First Name,Last Name,Date of Birth,Phone,Email,Address,City,State,Zip Code\n'
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'patient_import_template.csv'
-    link.click()
-    window.URL.revokeObjectURL(url)
-  }
 
   const handleImport = () => {
     if (soberLivingHome && selectedFiles.length > 0) {
@@ -64,7 +53,6 @@ const ImportPatientDialog: React.FC<ImportPatientDialogProps> = ({
     }
   }
 
-  const isFormValid = soberLivingHome && selectedFiles.length > 0
 
   const dialogContent = (
     <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -168,6 +156,7 @@ const ImportPatientDialog: React.FC<ImportPatientDialogProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
+            lineHeight: "1.2em",
           gap: '12px',
           padding: '16px',
           borderTop: `1px solid ${COLORS.NEUTRAL_5}`,

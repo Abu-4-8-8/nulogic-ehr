@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ArrowBack, Close } from "@mui/icons-material";
-import { Box, IconButton, Tab, Tabs, Typography, TextField, Alert, Snackbar } from "@mui/material"
+import { ArrowBack } from "@mui/icons-material";
+import { Box, IconButton, Tab, Tabs, Typography, Alert, Snackbar } from "@mui/material"
 import { COLORS } from "../../../constants/colors";
 import TYPOGRAPHY from "../../../constants/typography";
 import CheckIcon from "@mui/icons-material/Check";
-import CustomDialog from "../../../components/custom-fields/CustomDialog";
 import { CustomButton } from "../../../components/custom-fields";
+import AddNoteDialog  from "../../../components/dialog/AddNoteDialog";
 import { 
     Demographics, 
     ContactInformation, 
@@ -20,9 +20,7 @@ import { patientOnboardingSchema, defaultValues, PatientOnboardingFormData } fro
 const PatientOnboarding = () => {
     const [avatarSrc, setAvatarSrc] = useState<string>('')
     const [ssnDialogOpen, setSsnDialogOpen] = useState(false)
-    const [ssnNote, setSsnNote] = useState('')
     const [emailDialogOpen, setEmailDialogOpen] = useState(false)
-    const [emailNote, setEmailNote] = useState('')
     const [activeStep, setActiveStep] = useState(0)
     const [completedSteps, setCompletedSteps] = useState<number[]>([])
     const [validationError, setValidationError] = useState('')
@@ -52,43 +50,35 @@ const PatientOnboarding = () => {
         // Handle form submission here
     }
 
-    const handleSsnNoteSubmit = () => {
-        setValue('demographics.ssnNote', ssnNote)
+    const handleSsnNoteSubmit = (note: string) => {
+        setValue('demographics.ssnNote', note)
         // Clear SSN field if note is provided
-        if (ssnNote.trim()) {
+        if (note.trim()) {
             setValue('demographics.ssn', '')
         }
-        setSsnDialogOpen(false)
-        setSsnNote('')
     }
 
     const handleSsnDialogClose = () => {
         setSsnDialogOpen(false)
-        setSsnNote('')
     }
 
     const handleSsnDialogOpen = () => {
-        setSsnNote(watch('demographics.ssnNote') || '')
         setSsnDialogOpen(true)
     }
 
-    const handleEmailNoteSubmit = () => {
-        setValue('contactInformation.emailNote', emailNote)
+    const handleEmailNoteSubmit = (note: string) => {
+        setValue('contactInformation.emailNote', note)
         // Clear Email field if note is provided
-        if (emailNote.trim()) {
+        if (note.trim()) {
             setValue('contactInformation.emailId', '')
         }
-        setEmailDialogOpen(false)
-        setEmailNote('')
     }
 
     const handleEmailDialogClose = () => {
         setEmailDialogOpen(false)
-        setEmailNote('')
     }
 
     const handleEmailDialogOpen = () => {
-        setEmailNote(watch('contactInformation.emailNote') || '')
         setEmailDialogOpen(true)
     }
 
@@ -250,199 +240,6 @@ const PatientOnboarding = () => {
         </Box>
     );
 
-    // Create the SSN note dialog content based on Figma design
-    const ssnDialogContent = (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                backgroundColor: COLORS.WHITE,
-                borderRadius: '8px',
-            }}
-        >
-            {/* Header with title and close button */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '16px 16px 12px 16px',
-                    gap: '10px',
-                }}
-            >
-                <Typography
-                    sx={{
-                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
-                        fontSize: '18px',
-                        lineHeight: '1.21em',
-                        color: COLORS.NEUTRAL_90, // #1D1D1D
-                        flex: 1,
-                    }}
-                >
-                    Add Note for SSN
-                </Typography>
-                <IconButton
-                    onClick={handleSsnDialogClose}
-                    sx={{
-                        width: '20px',
-                        height: '20px',
-                        padding: 0,
-                        color: COLORS.NEUTRAL_80, // #393939
-                        '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                        },
-                    }}
-                >
-                    <Close sx={{ fontSize: '16px' }} />
-                </IconButton>
-            </Box>
-
-            {/* Content area */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '34px',
-                    padding: '8px 16px 16px',
-                }}
-            >
-                {/* Note input section */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
-                            <Typography
-                                sx={{
-                                    fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                                    fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
-                                    fontSize: '16px',
-                                    lineHeight: '1.21em',
-                                    color: COLORS.NEUTRAL_80, // #393939
-                                }}
-                            >
-                                Note
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={4}
-                                value={ssnNote}
-                                onChange={(e) => setSsnNote(e.target.value)}
-                                placeholder="Type here"
-                                variant="outlined"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: '4px',
-                                        fontSize: '16px',
-                                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                                        backgroundColor: COLORS.WHITE,
-                                        boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.16)',
-                                        '& fieldset': {
-                                            border: 'none',
-                                        },
-                                        '&:hover fieldset': {
-                                            border: 'none',
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            border: 'none',
-                                        },
-                                        '& .MuiOutlinedInput-input': {
-                                            padding: '8px',
-                                            color: COLORS.NEUTRAL_90, // #727272
-                                            '&::placeholder': {
-                                                color: COLORS.NEUTRAL_50, // #727272
-                                                // opacity: 1,
-                                                fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                                                fontWeight: TYPOGRAPHY.fontWeight.regular, // 400
-                                                fontSize: '14px',
-                                                lineHeight: '1.21em',
-                                            },
-                                        },
-                                    },
-                                }}
-                            />
-                        </Box>
-                    </Box>
-                </Box>
-            </Box>
-
-            {/* Action buttons */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px',
-                }}
-            >
-                <CustomButton
-                    variant="outlined"
-                    onClick={handleSsnDialogClose}
-                    sx={{
-                        minWidth: '80px',
-                        height: '40px',
-                        borderColor: COLORS.PRIMARY_50, // #0077C6
-                        color: COLORS.PRIMARY_50, // #0077C6
-                        backgroundColor: COLORS.PRIMARY_1, // #F4FBFE
-                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
-                        fontSize: '14px',
-                        lineHeight: '1.25em',
-                        borderRadius: '4px',
-                        boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
-                        '&:hover': {
-                            borderColor: COLORS.PRIMARY_50,
-                            backgroundColor: COLORS.PRIMARY_1,
-                        },
-                    }}
-                >
-                    Cancel
-                </CustomButton>
-                <CustomButton
-                    variant="contained"
-                    onClick={handleSsnNoteSubmit}
-                    sx={{
-                        minWidth: '80px',
-                        height: '40px',
-                        backgroundColor: COLORS.PRIMARY_50, // #0077C6
-                        color: COLORS.WHITE,
-                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
-                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
-                        fontSize: '14px',
-                        lineHeight: '1.25em',
-                        borderRadius: '4px',
-                        boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
-                        '&:hover': {
-                            backgroundColor: COLORS.PRIMARY_60, // #005BA1
-                        },
-                    }}
-                >
-                    Add Note
-                </CustomButton>
-            </Box>
-        </Box>
-    );
-
     return (
         <FormProvider {...methods}>
             <Box
@@ -574,77 +371,24 @@ const PatientOnboarding = () => {
                     </Box>
                 </Box>
 
-                {/* SSN Note Dialog using CommonModal */}
-                <CustomDialog
+                {/* SSN Note Dialog */}
+                <AddNoteDialog
                     open={ssnDialogOpen}
                     onClose={handleSsnDialogClose}
-                    type="custom"
-                    maxWidth="sm"
-                    htmlContent={ssnDialogContent}
-                    disableBackdropClick={false}
+                    onSubmit={handleSsnNoteSubmit}
+                    title="Add Note for SSN"
+                    initialNote={watch('demographics.ssnNote') || ''}
+                    fieldName="ssn"
                 />
 
-                {/* Email Note Dialog using CommonModal */}
-                <CustomDialog
+                {/* Email Note Dialog */}
+                <AddNoteDialog
                     open={emailDialogOpen}
                     onClose={handleEmailDialogClose}
-                    type="custom"
+                    onSubmit={handleEmailNoteSubmit}
                     title="Add Note for Email ID"
-                    maxWidth="sm"
-                    buttons={[
-                        {
-                            label: 'Cancel',
-                            variant: 'outlined',
-                            customColor: 'secondary',
-                            onClick: handleEmailDialogClose,
-                        },
-                        {
-                            label: 'Add Note',
-                            variant: 'contained',
-                            customColor: 'primary',
-                            onClick: handleEmailNoteSubmit,
-                        },
-                    ]}
-                    htmlContent={
-                        <Box sx={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontWeight: '500',
-                                    color: COLORS.GRAY_700,
-                                    fontSize: '14px',
-                                }}
-                            >
-                                Note
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={4}
-                                value={ssnNote}
-                                onChange={(e) => setSsnNote(e.target.value)}
-                                placeholder="Type here"
-                                variant="outlined"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                    borderRadius: '4px',
-                                    fontSize: '16px',
-                                    fontFamily: TYPOGRAPHY.fontFamily.primary,
-                                    backgroundColor: COLORS.WHITE,
-                                    boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.16)',
-                                    '& fieldset': { border: 'none' },
-                                    '&:hover fieldset': { border: 'none' },
-                                    '&.Mui-focused fieldset': { border: 'none' },
-
-                                    // 🔑 remove padding for multiline
-                                    '& .MuiOutlinedInput-inputMultiline': {
-                                        padding: 0,
-                                    },
-                                    },
-                                }}
-                            />
-                        </Box>
-                    }
+                    initialNote={watch('contactInformation.emailNote') || ''}
+                    fieldName="email"
                 />
 
                 {/* Validation Error Snackbar */}
