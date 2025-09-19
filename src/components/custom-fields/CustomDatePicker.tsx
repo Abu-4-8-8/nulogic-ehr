@@ -50,15 +50,6 @@ const CustomDatePicker = forwardRef<HTMLDivElement, CustomDatePickerProps>(
   ) => {
     const [open, setOpen] = useState(false)
     const isError = hasError || error || !!errorMessage
-
-    const formatDateToString = (date: Date | null): string => {
-      if (!date) return ''
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      const year = date.getFullYear()
-      return `${month}/${day}/${year}`
-    }
-
     const defaultSx = {
       '& .MuiOutlinedInput-root': {
         backgroundColor: `${COLORS.WHITE} !important`,

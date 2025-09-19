@@ -370,7 +370,7 @@ const PatientOnboarding = () => {
                                             color: COLORS.NEUTRAL_90, // #727272
                                             '&::placeholder': {
                                                 color: COLORS.NEUTRAL_50, // #727272
-                                                opacity: 1,
+                                                // opacity: 1,
                                                 fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
                                                 fontWeight: TYPOGRAPHY.fontWeight.regular, // 400
                                                 fontSize: '14px',
@@ -621,31 +621,25 @@ const PatientOnboarding = () => {
                                 fullWidth
                                 multiline
                                 rows={4}
-                                value={emailNote}
-                                onChange={(e) => setEmailNote(e.target.value)}
-                                placeholder="Please explain why Email ID cannot be provided..."
+                                value={ssnNote}
+                                onChange={(e) => setSsnNote(e.target.value)}
+                                placeholder="Type here"
                                 variant="outlined"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
-                                        borderRadius: '8px',
-                                        fontSize: '14px',
-                                        '& fieldset': {
-                                            borderColor: COLORS.GRAY_300,
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: COLORS.GRAY_400,
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: COLORS.PRIMARY,
-                                            borderWidth: '2px',
-                                        },
-                                        '& .MuiOutlinedInput-input': {
-                                            padding: '12px 14px',
-                                            '&::placeholder': {
-                                                color: COLORS.GRAY_500,
-                                                opacity: 1,
-                                            },
-                                        },
+                                    borderRadius: '4px',
+                                    fontSize: '16px',
+                                    fontFamily: TYPOGRAPHY.fontFamily.primary,
+                                    backgroundColor: COLORS.WHITE,
+                                    boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.16)',
+                                    '& fieldset': { border: 'none' },
+                                    '&:hover fieldset': { border: 'none' },
+                                    '&.Mui-focused fieldset': { border: 'none' },
+
+                                    // 🔑 remove padding for multiline
+                                    '& .MuiOutlinedInput-inputMultiline': {
+                                        padding: 0,
+                                    },
                                     },
                                 }}
                             />

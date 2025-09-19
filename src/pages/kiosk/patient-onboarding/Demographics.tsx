@@ -229,7 +229,7 @@ const Demographics: React.FC<DemographicsProps> = ({
                     render={({ field }) => (
                       <CustomDatePicker
                         label="Date Of Birth"
-                        placeholder="Select Date"
+                        placeholder="MM/DD/YYYY"
                         required={true}
                         containerSx={{ mb: 0 }}
                         hasError={!!errors.demographics?.dateOfBirth}
