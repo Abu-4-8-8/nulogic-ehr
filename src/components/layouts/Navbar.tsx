@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
 import {
-  AppBar, Toolbar, Box, IconButton, Menu, MenuItem, Drawer, List,
-  ListItem, ListItemText, Divider, Typography, Button, Badge, useTheme, useMediaQuery
+  AppBar, Box, IconButton, Menu, MenuItem, Drawer, List,
+  ListItem, ListItemText, Divider, Typography, Button, Badge, useMediaQuery
 } from '@mui/material'
 import {
   Menu as MenuIcon, Close as CloseIcon, Notifications as NotificationsIcon,
   Search as SearchIcon, KeyboardArrowDown as KeyboardArrowDownIcon,
-  AccountCircle as AccountCircleIcon, Settings as SettingsIcon,
   Logout as LogoutIcon, Person as PersonIcon
 } from '@mui/icons-material'
 import { COLORS } from '../../constants/colors'
-import { TYPOGRAPHY } from '../../constants/typography'
 import NuLogicLogo from '../ui/NuLogicLogo'
-import CustomAvatar from '../common/CustomAvatar'
-import CustomDropdown, { DropdownOption } from '../common/CustomDropdown'
 
 export interface NavLink {
   id?: string
@@ -54,7 +50,6 @@ const Navbar: React.FC<NavbarProps> = ({
   notificationCount = 0,
   position = 'fixed'
 }) => {
-  const theme = useTheme()
   const isMobile = useMediaQuery('(max-width:900px)')
 
   // Centralized Responsive Sizing System

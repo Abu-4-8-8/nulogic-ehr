@@ -81,19 +81,19 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                           customColor === 'info' ? COLORS.INFO : COLORS.PRIMARY,
           color: '#FFFFFF',
           '&:hover': {
-                    backgroundColor: customColor === 'primary' ? COLORS.PRIMARY_1_70 :
-          customColor === 'secondary' ? COLORS.PRIMARY_2_70 :
+                    backgroundColor: customColor === 'primary' ? COLORS.PRIMARY_70 :
+          customColor === 'secondary' ? COLORS.SECONDARY_70 :
                             customColor === 'success' ? '#1b5e20' :
                             customColor === 'error' ? '#c62828' :
                             customColor === 'warning' ? '#e65100' :
-                            customColor === 'info' ? '#0277bd' : COLORS.PRIMARY_1_70,
+                            customColor === 'info' ? '#0277bd' : COLORS.PRIMARY_70,
             boxShadow: '0px 4px 8px 0px rgba(16, 24, 40, 0.1)',
           },
           '&:active': {
             boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
           },
           '&.Mui-disabled': {
-            backgroundColor: COLORS.NEUTRAL_30,
+            backgroundColor: COLORS.NEUTRAL_60,
             color: COLORS.NEUTRAL_50,
             boxShadow: 'none',
           },
@@ -113,14 +113,14 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                               customColor === 'warning' ? COLORS.WARNING :
                               customColor === 'info' ? COLORS.INFO : COLORS.PRIMARY}`,
           '&:hover': {
-            backgroundColor: customColor === 'primary' ? COLORS.PRIMARY_1_10 : 
-                            customColor === 'secondary' ? COLORS.PRIMARY_2_10 :
+            backgroundColor: customColor === 'primary' ? COLORS.PRIMARY_10 : 
+                            customColor === 'secondary' ? COLORS.SECONDARY_20 :
                             customColor === 'success' ? 'rgba(46, 125, 50, 0.04)' :
                             customColor === 'error' ? 'rgba(211, 47, 47, 0.04)' :
                             customColor === 'warning' ? 'rgba(237, 108, 2, 0.04)' :
-                            customColor === 'info' ? 'rgba(2, 136, 209, 0.04)' : COLORS.PRIMARY_1_10,
-            borderColor: customColor === 'primary' ? COLORS.PRIMARY_1_70 : 
-                        customColor === 'secondary' ? COLORS.PRIMARY_2_70 :
+                            customColor === 'info' ? 'rgba(2, 136, 209, 0.04)' : COLORS.PRIMARY_10,
+            borderColor: customColor === 'primary' ? COLORS.PRIMARY_70 : 
+                        customColor === 'secondary' ? COLORS.SECONDARY_70 :
                         customColor === 'success' ? '#1b5e20' :
                         customColor === 'error' ? '#c62828' :
                         customColor === 'warning' ? '#e65100' :

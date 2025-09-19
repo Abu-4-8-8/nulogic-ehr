@@ -7,7 +7,7 @@ import {
   Typography
 } from '@mui/material'
 import { COLORS } from '../../constants/colors'
-import CustomButton from './CustomButton'
+import CustomButton from '../custom-fields/CustomButton'
 
 export type ModalType = 'alert' | 'confirmation' | 'custom'
 

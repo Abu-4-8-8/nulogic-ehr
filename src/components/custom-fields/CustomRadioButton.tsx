@@ -3,7 +3,7 @@ import { Radio, FormControlLabel, Box, Typography } from '@mui/material'
 import type { RadioProps } from '@mui/material'
 import { COLORS } from '../../constants/colors'
 
-export interface CustomRadioButtonProps extends Omit<RadioProps, 'color'> {
+export interface CustomRadioButtonProps extends Omit<RadioProps, 'color' | 'size'> {
   label?: string
   value: string | number
   checked?: boolean
@@ -161,7 +161,7 @@ const CustomRadioButton = forwardRef<HTMLButtonElement, CustomRadioButtonProps>(
         value={value}
         checked={checked}
         disabled={disabled}
-        size={size}
+        size={size === 'large' ? 'medium' : size}
         sx={getRadioStyles()}
         onChange={onChange}
         {...props}

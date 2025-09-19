@@ -13,8 +13,8 @@ import {
 } from '@mui/material'
 import loginImage from '../../assets/login_page_image.png'
 import NuLogicLogo from '../../components/ui/NuLogicLogo'
-import CustomInput from '../../components/common/CustomInput'
-import CustomButton from '../../components/common/CustomButton'
+import CustomInput from '../../components/custom-fields/CustomInput'
+import CustomButton from '../../components/custom-fields/CustomButton'
 import { useAuth } from '../../contexts/AuthContext'
 
 // Validation schema

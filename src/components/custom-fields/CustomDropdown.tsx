@@ -213,24 +213,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   // UI Helpers
   const getSizeStyles = () => {
     switch (size) {
-      case 'small': return { 
-        height: '40px', 
-        fontSize: '14px', 
-        padding: '8px 12px',
-        iconSize: '20px'
-      }
-      case 'large': return { 
-        height: '64px', 
-        fontSize: '18px', 
-        padding: '20px 16px',
-        iconSize: '28px'
-      }
-      default: return { 
-        height: '56px', 
-        fontSize: '16px', 
-        padding: '16px 14px',
-        iconSize: '24px'
-      }
+      case 'small': return { height: '40px', fontSize: '14px', padding: '8px 12px', iconSize: '20px' }
+      case 'large': return { height: '64px', fontSize: '18px', padding: '20px 16px', iconSize: '28px' }
+      default: return { height: '56px', fontSize: '16px', padding: '16px 14px', iconSize: '24px' }
     }
   }
 
@@ -287,10 +272,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       border: `1px solid ${isError ? '#DC2626' : '#C9CBCC'}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
       '&:hover': {
-        borderColor: isError ? '#DC2626' : '#9ca3af',
+        borderColor: isError ? '#DC2626' : COLORS.NEUTRAL_30,
       },
       '&:focus-within': {
-        borderColor: isError ? '#DC2626' : COLORS.PRIMARY,
+        borderColor: isError ? '#DC2626' : COLORS.PRIMARY_70,
         borderWidth: '1px',
       },
     }
@@ -413,11 +398,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           {type === 'avatar-leading' && !multiple && getSelectedOptions()[0]?.avatar && (
             <Avatar 
               src={getSelectedOptions()[0].avatar} 
-              sx={{ 
-                width: parseInt(getIconSize()), 
-                height: parseInt(getIconSize()), 
-                fontSize: parseInt(getIconSize()) / 2 
-              }}
+              sx={{ width: parseInt(getIconSize()), height: parseInt(getIconSize()), fontSize: parseInt(getIconSize()) / 2 }}
             >
               {getSelectedOptions()[0].label.charAt(0)}
             </Avatar>
@@ -432,24 +413,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                     key={opt.value}
                     label={opt.label}
                     size="small"
-                    sx={{
-                      height: 24,
-                      fontSize: 12,
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      color: theme.palette.primary.main,
-                    }}
+                    sx={{ height: 24, fontSize: 12, backgroundColor: alpha(theme.palette.primary.main, 0.1), color: theme.palette.primary.main }}
                   />
                 ))}
                 {selectedValues.length > 2 && (
                   <Chip
                     label={`+${selectedValues.length - 2}`}
                     size="small"
-                    sx={{ 
-                      height: 24, 
-                      fontSize: 12, 
-                      backgroundColor: alpha(theme.palette.text.primary, 0.1), 
-                      color: theme.palette.text.secondary 
-                    }}
+                    sx={{ height: 24, fontSize: 12, backgroundColor: alpha(theme.palette.text.primary, 0.1), color: theme.palette.text.secondary }}
                   />
                 )}
               </Box>
@@ -475,13 +446,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             <Chip
               label="New"
               size="small"
-              sx={{ 
-                height: 20, 
-                fontSize: 10, 
-                backgroundColor: theme.palette.secondary.main, 
-                color: theme.palette.secondary.contrastText, 
-                fontWeight: 500 
-              }}
+              sx={{ height: 20, fontSize: 10, backgroundColor: theme.palette.secondary.main, color: theme.palette.secondary.contrastText, fontWeight: 500 }}
             />
           )}
 
@@ -542,18 +507,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         }}
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-        MenuListProps={{
-          sx: {
-            padding: 0,
-          }
-        }}
+        MenuListProps={{ sx: { padding: 0 } }}
       >
         {/* Search */}
         {type === 'search' && (
-          <Box sx={{ 
-            padding: theme.spacing(1), 
-            borderBottom: `1px solid ${theme.palette.divider}`
-          }}>
+          <Box sx={{ padding: theme.spacing(1), borderBottom: `1px solid ${theme.palette.divider}` }}>
             <TextField
               fullWidth
               placeholder={searchPlaceholder}
@@ -619,18 +577,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                         color: option.disabled 
                           ? theme.palette.text.disabled 
                           : (option.value === 'logout' ? '#B1000F' : theme.palette.text.primary),
-                        '&:hover': { 
-                          backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                        },
+                        '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.08) },
                         '&.Mui-selected': {
                           backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                          '&:hover': { 
-                            backgroundColor: alpha(theme.palette.primary.main, 0.16),
-                          },
+                          '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.16) },
                         },
                       }}
                     >
-                      {/* Selection Icon */}
                       <ListItemIcon sx={{ minWidth: 32 }}>
                         {multiple ? (
                           isSelected(option.value) ? (
@@ -643,60 +596,25 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                         )}
                       </ListItemIcon>
 
-                      {/* Avatar */}
                       {type === 'avatar-leading' && option.avatar && (
-                        <Avatar 
-                          src={option.avatar} 
-                          sx={{ 
-                            width: 24, 
-                            height: 24, 
-                            fontSize: 12, 
-                            mr: 1 
-                          }}
-                        >
+                        <Avatar src={option.avatar} sx={{ width: 24, height: 24, fontSize: 12, mr: 1 }}>
                           {option.label.charAt(0)}
                         </Avatar>
                       )}
 
-                      {/* Option Icon */}
                       {option.icon && (
-                        <ListItemIcon sx={{ 
-                          minWidth: '26px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'flex-start'
-                        }}>
+                        <ListItemIcon sx={{ minWidth: '26px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
                           {option.icon}
                         </ListItemIcon>
                       )}
 
-                      {/* Text */}
                       <ListItemText 
                         primary={option.label} 
-                        sx={{ 
-                          '& .MuiListItemText-primary': { 
-                            fontSize: '14px',
-                            fontFamily: 'Figtree',
-                            fontWeight: 400,
-                            lineHeight: '1.2em',
-                            color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary,
-                          } 
-                        }} 
+                        sx={{ '& .MuiListItemText-primary': { fontSize: '14px', fontFamily: 'Figtree', fontWeight: 400, lineHeight: '1.2em', color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary } }} 
                       />
 
-                      {/* Badge */}
                       {option.badge && (
-                        <Chip
-                          label={option.badge}
-                          size="small"
-                          sx={{ 
-                            height: 20, 
-                            fontSize: 10, 
-                            backgroundColor: theme.palette.secondary.main, 
-                            color: theme.palette.secondary.contrastText, 
-                            fontWeight: 500 
-                          }}
-                        />
+                        <Chip label={option.badge} size="small" sx={{ height: 20, fontSize: 10, backgroundColor: theme.palette.secondary.main, color: theme.palette.secondary.contrastText, fontWeight: 500 }} />
                       )}
                     </MenuItem>
                     {option.divider && <Divider />}
@@ -719,18 +637,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                     color: option.disabled 
                       ? theme.palette.text.disabled 
                       : (option.value === 'logout' ? '#B1000F' : theme.palette.text.primary),
-                    '&:hover': { 
-                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                    },
+                    '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.08) },
                     '&.Mui-selected': {
                       backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                      '&:hover': { 
-                        backgroundColor: alpha(theme.palette.primary.main, 0.16),
-                      },
+                      '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.16) },
                     },
                   }}
                 >
-                  {/* Selection Icon */}
                   <ListItemIcon sx={{ minWidth: 32 }}>
                     {multiple ? (
                       isSelected(option.value) ? (
@@ -743,60 +656,25 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                     )}
                   </ListItemIcon>
 
-                  {/* Avatar */}
                   {type === 'avatar-leading' && option.avatar && (
-                    <Avatar 
-                      src={option.avatar} 
-                      sx={{ 
-                        width: 24, 
-                        height: 24, 
-                        fontSize: 12, 
-                        mr: 1 
-                      }}
-                    >
+                    <Avatar src={option.avatar} sx={{ width: 24, height: 24, fontSize: 12, mr: 1 }}>
                       {option.label.charAt(0)}
                     </Avatar>
                   )}
 
-                  {/* Option Icon */}
                   {option.icon && (
-                    <ListItemIcon sx={{ 
-                      minWidth: '26px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start'
-                    }}>
+                    <ListItemIcon sx={{ minWidth: '26px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
                       {option.icon}
                     </ListItemIcon>
                   )}
 
-                  {/* Text */}
                   <ListItemText 
                     primary={option.label} 
-                    sx={{ 
-                      '& .MuiListItemText-primary': { 
-                        fontSize: '14px',
-                        fontFamily: 'Figtree',
-                        fontWeight: 400,
-                        lineHeight: '1.2em',
-                        color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary,
-                      } 
-                    }} 
+                    sx={{ '& .MuiListItemText-primary': { fontSize: '14px', fontFamily: 'Figtree', fontWeight: 400, lineHeight: '1.2em', color: option.value === 'logout' ? '#B1000F' : theme.palette.text.primary } }} 
                   />
 
-                  {/* Badge */}
                   {option.badge && (
-                    <Chip
-                      label={option.badge}
-                      size="small"
-                      sx={{ 
-                        height: 20, 
-                        fontSize: 10, 
-                        backgroundColor: theme.palette.secondary.main, 
-                        color: theme.palette.secondary.contrastText, 
-                        fontWeight: 500 
-                      }}
-                    />
+                    <Chip label={option.badge} size="small" sx={{ height: 20, fontSize: 10, backgroundColor: theme.palette.secondary.main, color: theme.palette.secondary.contrastText, fontWeight: 500 }} />
                   )}
                 </MenuItem>
                 {option.divider && <Divider />}
@@ -804,16 +682,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             ))
           )
         ) : (
-          <MenuItem disabled sx={{ 
-            justifyContent: 'center',
-            py: 2
-          }}>
-            <Typography sx={{ 
-              fontSize: '14px',
-              fontFamily: 'Figtree',
-              fontWeight: 400,
-              color: theme.palette.text.secondary
-            }}>
+          <MenuItem disabled sx={{ justifyContent: 'center', py: 2 }}>
+            <Typography sx={{ fontSize: '14px', fontFamily: 'Figtree', fontWeight: 400, color: theme.palette.text.secondary }}>
               {noOptionsText}
             </Typography>
           </MenuItem>

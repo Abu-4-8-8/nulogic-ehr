@@ -13,7 +13,7 @@ export type { CustomDropdownProps, DropdownOption } from './CustomDropdown'
 export { default as CustomLabel } from './CustomLabel'
 export type { CustomLabelProps } from './CustomLabel'
 
-export { default as CustomDialog } from './CustomDialog'
+export { default as CustomDialog } from '../widgets/CustomDialog'
 
 export { default as CustomRadioButton } from './CustomRadioButton'
 export { default as CustomUpload } from './CustomUpload'
@@ -21,3 +21,6 @@ export type { CustomRadioButtonProps } from './CustomRadioButton'
 
 export { default as CustomCheckbox } from './CustomCheckbox'
 export type { CustomCheckboxProps } from './CustomCheckbox'
+
+export { default as CustomDatePicker } from './CustomDatePicker'
+export type { CustomDatePickerProps } from './CustomDatePicker'

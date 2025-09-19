@@ -1,7 +1,7 @@
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
-import { CustomInput, CustomDropdown, CustomAvatar, CustomLabel } from '../../../components/common'
+import { CustomInput, CustomDropdown, CustomAvatar, CustomLabel, CustomDatePicker } from '../../../components/custom-fields'
 import { COLORS } from '../../../constants/colors'
 import TYPOGRAPHY from '../../../constants/typography'
 import defaultAvatar from '../../../assets/default_avatar.png'
@@ -223,18 +223,19 @@ const Demographics: React.FC<DemographicsProps> = ({
 
                 {/* Third Row: Date of Birth, Marital Status, Time Zone, Preferred Language */}
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <CustomLabel isRequired={true}>Date Of Birth</CustomLabel>
                   <Controller
                     name="demographics.dateOfBirth"
                     control={control}
                     render={({ field }) => (
-                      <CustomInput
+                      <CustomDatePicker
+                        label="Date Of Birth"
                         placeholder="Select Date"
-                        type="date"
+                        required={true}
                         containerSx={{ mb: 0 }}
                         hasError={!!errors.demographics?.dateOfBirth}
                         errorMessage={errors.demographics?.dateOfBirth?.message}
-                        {...field}
+                        value={field.value}
+                        onChange={(date) => field.onChange(date)}
                       />
                     )}
                   />

@@ -2,7 +2,7 @@ import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Box, Card, CardContent, Grid, Typography, Button, Checkbox, FormControlLabel } from '@mui/material'
 import { Add as AddIcon } from '@mui/icons-material'
-import { CustomInput, CustomDropdown, CustomLabel } from '../../../components/common'
+import { CustomDropdown, CustomLabel, CustomDatePicker } from '../../../components/custom-fields'
 import { COLORS } from '../../../constants/colors'
 import TYPOGRAPHY from '../../../constants/typography'
 import { PatientOnboardingFormData } from './validationSchema'
@@ -232,13 +232,14 @@ const Other: React.FC = () => {
                   name="other.registrationDate"
                   control={control}
                   render={({ field }) => (
-                    <CustomInput
-                      placeholder="Select Date"
-                      type="date"
+                    <CustomDatePicker
+                      placeholder="MM/DD/YYYY"
                       containerSx={{ mb: 0 }}
                       hasError={!!errors.other?.registrationDate}
                       errorMessage={errors.other?.registrationDate?.message}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      maxDate={new Date()} // Cannot be in the future
                     />
                   )}
                 />
