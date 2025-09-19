@@ -87,6 +87,32 @@ export const COLORS = {
   OFFLINE: '#6b7280',
   AWAY: '#f59e0b',
   BUSY: '#ef4444',
+
+  // Service Type Colors (from Figma designs)
+  // Non-MAT Service Colors
+  NON_MAT_BG: '#F5F5FA',      // Light purple/lavender background
+  NON_MAT_COLOR: '#5A5DF5',   // Purple color from the new SVG icon
+  NON_MAT_BORDER: '#5A5DF5',  // Purple border to match icon
+  
+  // STI Service Colors  
+  STI_BG: '#FDF2F8',          // Light pink background
+  STI_COLOR: '#CA4394',       // Pink/magenta color from the new SVG icon
+  STI_BORDER: '#CA4394',      // Pink border to match icon
+  
+  // Psych Service Colors
+  PSYCH_BG: '#FDF8F4',        // Light warm beige/off-white background
+  PSYCH_COLOR: '#B45309',     // Medium brown/orange-brown for icon, text, and border
+  PSYCH_BORDER: '#B45309',    // Medium brown border
+  
+  // MAT Service Colors (from provided SVG)
+  MAT_BG: '#F0F9FF',          // Light blue background
+  MAT_COLOR: '#0D91B1',       // Medium teal-blue for icon, text, and border
+  MAT_BORDER: '#0D91B1',      // Medium teal-blue border
+  
+  // Fourth Service Colors (placeholder - to be updated from Figma)
+  FOURTH_SERVICE_BG: '#F0F9FF', // Light blue background
+  FOURTH_SERVICE_COLOR: '#0369A1', // Medium blue for icon, text, and border
+  FOURTH_SERVICE_BORDER: '#0369A1', // Medium blue border
 } as const
 
 // Type for color keys

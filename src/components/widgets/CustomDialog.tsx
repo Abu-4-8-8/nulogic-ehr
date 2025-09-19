@@ -44,6 +44,8 @@ export interface CommonModalProps {
   // Modal configuration
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   disableBackdropClick?: boolean
+  customWidth?: string // Add custom width support
+  customHeight?: string // Add custom height support
 }
 
 const CommonModal: React.FC<CommonModalProps> = ({
@@ -60,7 +62,9 @@ const CommonModal: React.FC<CommonModalProps> = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   maxWidth = 'xs',
-  disableBackdropClick = false
+  disableBackdropClick = false,
+  customWidth,
+  customHeight
 }) => {
   const handleClose = (_event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
     if (disableBackdropClick && reason === 'backdropClick') return
@@ -107,6 +111,26 @@ const CommonModal: React.FC<CommonModalProps> = ({
 
   const modalButtons = getModalButtons()
 
+  // Determine dialog dimensions based on Figma specs
+  const getDialogDimensions = () => {
+    if (customWidth && customHeight) {
+      return { width: customWidth, height: customHeight }
+    }
+    
+    if (maxWidth === 'sm' && htmlContent) {
+      // SSN Note Dialog dimensions from Figma
+      return { width: '650px', height: 'auto' }
+    }
+    
+    if (maxWidth === 'md') {
+      return { width: '590px', height: '415px' }
+    }
+    
+    return { width: '385px', height: 'auto' }
+  }
+
+  const { width, height } = getDialogDimensions()
+
   return (
     <Dialog
       open={open}
@@ -115,12 +139,13 @@ const CommonModal: React.FC<CommonModalProps> = ({
       PaperProps={{
         sx: {
           borderRadius: '8px',
-          width: maxWidth === 'md' ? '590px' : '385px',
-          height: maxWidth === 'md' ? '415px' : 'auto',
+          width: width,
+          height: height,
           backgroundColor: COLORS.WHITE,
           boxShadow: '0px 20px 24px -4px rgba(16, 24, 40, 0.08), 0px 8px 8px -4px rgba(16, 24, 40, 0.03)',
           display: maxWidth === 'md' ? 'flex' : 'block',
-          flexDirection: maxWidth === 'md' ? 'column' : 'row'
+          flexDirection: maxWidth === 'md' ? 'column' : 'row',
+          margin: '32px', // Add margin for better positioning
         }
       }}
       BackdropProps={{
@@ -132,17 +157,18 @@ const CommonModal: React.FC<CommonModalProps> = ({
       {/* Content */}
       <DialogContent
         sx={{
-          padding: maxWidth === 'md' ? '0' : '24px 32px',
+          padding: maxWidth === 'md' ? '0' : (maxWidth === 'sm' && htmlContent ? '0' : '24px 32px'),
           display: 'flex',
           flexDirection: 'column',
           gap: maxWidth === 'md' ? '0' : '24px',
           flex: maxWidth === 'md' ? 1 : 'none',
-          overflow: maxWidth === 'md' ? 'hidden' : 'visible'
+          overflow: maxWidth === 'md' ? 'hidden' : 'visible',
+          height: maxWidth === 'sm' && htmlContent ? '100%' : 'auto'
         }}
       >
         {/* Render HTML Content directly for custom modals, or standard layout for others */}
-        {maxWidth === 'md' && htmlContent ? (
-          // Custom modal layout (like surgical history form)
+        {(maxWidth === 'md' || (maxWidth === 'sm' && htmlContent)) && htmlContent ? (
+          // Custom modal layout (like SSN note dialog or surgical history form)
           htmlContent
         ) : (
           // Standard modal layout
@@ -253,7 +279,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
       </DialogContent>
 
       {/* Actions - Hide for custom modals with HTML content */}
-      {modalButtons.length > 0 && !(maxWidth === 'md' && htmlContent) && (
+      {modalButtons.length > 0 && !(maxWidth === 'md' && htmlContent) && !(maxWidth === 'sm' && htmlContent) && (
         <DialogActions
           sx={{
             padding: '0 32px 24px 32px',

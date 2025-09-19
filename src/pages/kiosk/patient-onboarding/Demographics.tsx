@@ -164,7 +164,6 @@ const Demographics: React.FC<DemographicsProps> = ({
                         options={[
                           { value: 'male', label: 'Male' },
                           { value: 'female', label: 'Female' },
-                          { value: 'other', label: 'Other' }
                         ]}
                         containerSx={{ mb: 0 }}
                         error={!!errors.demographics?.genderAtBirth}
@@ -181,14 +180,8 @@ const Demographics: React.FC<DemographicsProps> = ({
                     name="demographics.currentGender"
                     control={control}
                     render={({ field }) => (
-                      <CustomDropdown
+                      <CustomInput
                         placeholder="Select Current Gender"
-                        options={[
-                          { value: 'male', label: 'Male' },
-                          { value: 'female', label: 'Female' },
-                          { value: 'non-binary', label: 'Non-binary' },
-                          { value: 'other', label: 'Other' }
-                        ]}
                         containerSx={{ mb: 0 }}
                         error={!!errors.demographics?.currentGender}
                         errorMessage={errors.demographics?.currentGender?.message}
