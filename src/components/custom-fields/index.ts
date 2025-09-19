@@ -21,3 +21,6 @@ export type { CustomRadioButtonProps } from './CustomRadioButton'
 
 export { default as CustomCheckbox } from './CustomCheckbox'
 export type { CustomCheckboxProps } from './CustomCheckbox'
+
+export { default as CustomDatePicker } from './CustomDatePicker'
+export type { CustomDatePickerProps } from './CustomDatePicker'

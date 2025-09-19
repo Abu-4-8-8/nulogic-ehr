@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ArrowBack } from "@mui/icons-material";
-import { Box, IconButton, Tab, Tabs, Typography, TextField, DialogActions, Alert, Snackbar } from "@mui/material"
+import { ArrowBack, Close } from "@mui/icons-material";
+import { Box, IconButton, Tab, Tabs, Typography, TextField, Alert, Snackbar } from "@mui/material"
 import { COLORS } from "../../../constants/colors";
 import TYPOGRAPHY from "../../../constants/typography";
 import CheckIcon from "@mui/icons-material/Check";
-import { CustomDialog, CustomButton } from "../../../components/custom-fields";
+import CustomDialog from "../../../components/custom-fields/CustomDialog";
+import { CustomButton } from "../../../components/custom-fields";
 import { 
     Demographics, 
     ContactInformation, 
@@ -111,7 +112,6 @@ const PatientOnboarding = () => {
             return false
         }
     }
-
 
     // Navigation functions
     const handleNext = async () => {
@@ -250,6 +250,199 @@ const PatientOnboarding = () => {
         </Box>
     );
 
+    // Create the SSN note dialog content based on Figma design
+    const ssnDialogContent = (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                backgroundColor: COLORS.WHITE,
+                borderRadius: '8px',
+            }}
+        >
+            {/* Header with title and close button */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '16px 16px 12px 16px',
+                    gap: '10px',
+                }}
+            >
+                <Typography
+                    sx={{
+                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
+                        fontSize: '18px',
+                        lineHeight: '1.21em',
+                        color: COLORS.NEUTRAL_90, // #1D1D1D
+                        flex: 1,
+                    }}
+                >
+                    Add Note for SSN
+                </Typography>
+                <IconButton
+                    onClick={handleSsnDialogClose}
+                    sx={{
+                        width: '20px',
+                        height: '20px',
+                        padding: 0,
+                        color: COLORS.NEUTRAL_80, // #393939
+                        '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        },
+                    }}
+                >
+                    <Close sx={{ fontSize: '16px' }} />
+                </IconButton>
+            </Box>
+
+            {/* Content area */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '34px',
+                    padding: '8px 16px 16px',
+                }}
+            >
+                {/* Note input section */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px',
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                                    fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
+                                    fontSize: '16px',
+                                    lineHeight: '1.21em',
+                                    color: COLORS.NEUTRAL_80, // #393939
+                                }}
+                            >
+                                Note
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                value={ssnNote}
+                                onChange={(e) => setSsnNote(e.target.value)}
+                                placeholder="Type here"
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '4px',
+                                        fontSize: '16px',
+                                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                                        backgroundColor: COLORS.WHITE,
+                                        boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.16)',
+                                        '& fieldset': {
+                                            border: 'none',
+                                        },
+                                        '&:hover fieldset': {
+                                            border: 'none',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            border: 'none',
+                                        },
+                                        '& .MuiOutlinedInput-input': {
+                                            padding: '8px',
+                                            color: COLORS.NEUTRAL_90, // #727272
+                                            '&::placeholder': {
+                                                color: COLORS.NEUTRAL_50, // #727272
+                                                opacity: 1,
+                                                fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                                                fontWeight: TYPOGRAPHY.fontWeight.regular, // 400
+                                                fontSize: '14px',
+                                                lineHeight: '1.21em',
+                                            },
+                                        },
+                                    },
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+
+            {/* Action buttons */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '16px',
+                }}
+            >
+                <CustomButton
+                    variant="outlined"
+                    onClick={handleSsnDialogClose}
+                    sx={{
+                        minWidth: '80px',
+                        height: '40px',
+                        borderColor: COLORS.PRIMARY_50, // #0077C6
+                        color: COLORS.PRIMARY_50, // #0077C6
+                        backgroundColor: COLORS.PRIMARY_1, // #F4FBFE
+                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
+                        fontSize: '14px',
+                        lineHeight: '1.25em',
+                        borderRadius: '4px',
+                        boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+                        '&:hover': {
+                            borderColor: COLORS.PRIMARY_50,
+                            backgroundColor: COLORS.PRIMARY_1,
+                        },
+                    }}
+                >
+                    Cancel
+                </CustomButton>
+                <CustomButton
+                    variant="contained"
+                    onClick={handleSsnNoteSubmit}
+                    sx={{
+                        minWidth: '80px',
+                        height: '40px',
+                        backgroundColor: COLORS.PRIMARY_50, // #0077C6
+                        color: COLORS.WHITE,
+                        fontFamily: TYPOGRAPHY.fontFamily.primary, // Use Figtree from constants
+                        fontWeight: TYPOGRAPHY.fontWeight.medium, // 500
+                        fontSize: '14px',
+                        lineHeight: '1.25em',
+                        borderRadius: '4px',
+                        boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+                        '&:hover': {
+                            backgroundColor: COLORS.PRIMARY_60, // #005BA1
+                        },
+                    }}
+                >
+                    Add Note
+                </CustomButton>
+            </Box>
+        </Box>
+    );
+
     return (
         <FormProvider {...methods}>
             <Box
@@ -381,195 +574,84 @@ const PatientOnboarding = () => {
                     </Box>
                 </Box>
 
-                {/* SSN Note Dialog */}
+                {/* SSN Note Dialog using CommonModal */}
                 <CustomDialog
                     open={ssnDialogOpen}
                     onClose={handleSsnDialogClose}
-                    title="Add Note for SSN"
-                    buttonName={["Cancel", "Add Note"]}
-                    width="500px"
-                    padding="20px"
-                >
-                    <Box>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontWeight: '500',
-                                color: COLORS.GRAY_700,
-                                mb: 1.5,
-                                fontSize: '14px',
-                            }}
-                        >
-                            Note
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={4}
-                            value={ssnNote}
-                            onChange={(e) => setSsnNote(e.target.value)}
-                            placeholder="Please explain why SSN cannot be provided..."
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    fontSize: '14px',
-                                    '& fieldset': {
-                                        borderColor: COLORS.GRAY_300,
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: COLORS.GRAY_400,
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: COLORS.PRIMARY,
-                                        borderWidth: '2px',
-                                    },
-                                    '& .MuiOutlinedInput-input': {
-                                        padding: '12px 14px',
-                                        '&::placeholder': {
-                                            color: COLORS.GRAY_500,
-                                            opacity: 1,
-                                        },
-                                    },
-                                },
-                            }}
-                        />
-                    </Box>
-                    <DialogActions
-                        sx={{
-                            p: 0,
-                            pt: 3,
-                            gap: 2,
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            variant="outlined"
-                            onClick={handleSsnDialogClose}
-                            sx={{
-                                minWidth: '80px',
-                                height: '40px',
-                                borderColor: COLORS.GRAY_300,
-                                color: COLORS.GRAY_700,
-                                '&:hover': {
-                                    borderColor: COLORS.GRAY_400,
-                                    backgroundColor: COLORS.GRAY_50,
-                                },
-                            }}
-                        >
-                            Cancel
-                        </CustomButton>
-                        <CustomButton
-                            variant="contained"
-                            onClick={handleSsnNoteSubmit}
-                            sx={{
-                                minWidth: '80px',
-                                height: '40px',
-                                backgroundColor: COLORS.PRIMARY,
-                                '&:hover': {
-                                    backgroundColor: COLORS.PRIMARY_DARK || COLORS.PRIMARY,
-                                },
-                            }}
-                        >
-                            Add Note
-                        </CustomButton>
-                    </DialogActions>
-                </CustomDialog>
+                    type="custom"
+                    maxWidth="sm"
+                    htmlContent={ssnDialogContent}
+                    disableBackdropClick={false}
+                />
 
-                {/* Email Note Dialog */}
+                {/* Email Note Dialog using CommonModal */}
                 <CustomDialog
                     open={emailDialogOpen}
                     onClose={handleEmailDialogClose}
+                    type="custom"
                     title="Add Note for Email ID"
-                    buttonName={["Cancel", "Add Note"]}
-                    width="500px"
-                    padding="20px"
-                >
-                    <Box>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontWeight: '500',
-                                color: COLORS.GRAY_700,
-                                mb: 1.5,
-                                fontSize: '14px',
-                            }}
-                        >
-                            Note
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={4}
-                            value={emailNote}
-                            onChange={(e) => setEmailNote(e.target.value)}
-                            placeholder="Please explain why Email ID cannot be provided..."
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
+                    maxWidth="sm"
+                    buttons={[
+                        {
+                            label: 'Cancel',
+                            variant: 'outlined',
+                            customColor: 'secondary',
+                            onClick: handleEmailDialogClose,
+                        },
+                        {
+                            label: 'Add Note',
+                            variant: 'contained',
+                            customColor: 'primary',
+                            onClick: handleEmailNoteSubmit,
+                        },
+                    ]}
+                    htmlContent={
+                        <Box sx={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    fontWeight: '500',
+                                    color: COLORS.GRAY_700,
                                     fontSize: '14px',
-                                    '& fieldset': {
-                                        borderColor: COLORS.GRAY_300,
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: COLORS.GRAY_400,
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: COLORS.PRIMARY,
-                                        borderWidth: '2px',
-                                    },
-                                    '& .MuiOutlinedInput-input': {
-                                        padding: '12px 14px',
-                                        '&::placeholder': {
-                                            color: COLORS.GRAY_500,
-                                            opacity: 1,
+                                }}
+                            >
+                                Note
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                value={emailNote}
+                                onChange={(e) => setEmailNote(e.target.value)}
+                                placeholder="Please explain why Email ID cannot be provided..."
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        '& fieldset': {
+                                            borderColor: COLORS.GRAY_300,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: COLORS.GRAY_400,
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: COLORS.PRIMARY,
+                                            borderWidth: '2px',
+                                        },
+                                        '& .MuiOutlinedInput-input': {
+                                            padding: '12px 14px',
+                                            '&::placeholder': {
+                                                color: COLORS.GRAY_500,
+                                                opacity: 1,
+                                            },
                                         },
                                     },
-                                },
-                            }}
-                        />
-                    </Box>
-                    <DialogActions
-                        sx={{
-                            p: 0,
-                            pt: 3,
-                            gap: 2,
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            variant="outlined"
-                            onClick={handleEmailDialogClose}
-                            sx={{
-                                minWidth: '80px',
-                                height: '40px',
-                                borderColor: COLORS.GRAY_300,
-                                color: COLORS.GRAY_700,
-                                '&:hover': {
-                                    borderColor: COLORS.GRAY_400,
-                                    backgroundColor: COLORS.GRAY_50,
-                                },
-                            }}
-                        >
-                            Cancel
-                        </CustomButton>
-                        <CustomButton
-                            variant="contained"
-                            onClick={handleEmailNoteSubmit}
-                            sx={{
-                                minWidth: '80px',
-                                height: '40px',
-                                backgroundColor: COLORS.PRIMARY,
-                                '&:hover': {
-                                    backgroundColor: COLORS.PRIMARY_DARK || COLORS.PRIMARY,
-                                },
-                            }}
-                        >
-                            Add Note
-                        </CustomButton>
-                    </DialogActions>
-                </CustomDialog>
+                                }}
+                            />
+                        </Box>
+                    }
+                />
 
                 {/* Validation Error Snackbar */}
                 <Snackbar

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Box, Card, CardContent, Grid, Typography, FormControlLabel, Radio, RadioGroup, Button } from '@mui/material'
-import { CustomInput, CustomDropdown, CustomLabel, CustomUpload } from '../../../components/custom-fields'
+import { CustomInput, CustomDropdown, CustomLabel, CustomUpload, CustomDatePicker } from '../../../components/custom-fields'
 import { COLORS } from '../../../constants/colors'
 import TYPOGRAPHY from '../../../constants/typography'
 import { PatientOnboardingFormData } from './validationSchema'
@@ -12,6 +12,7 @@ const InsuranceInformation: React.FC = () => {
   const [backCardFiles, setBackCardFiles] = useState<File[]>([])
   
   const paymentMethod = watch('insuranceInformation.paymentMethod')
+  const effectiveStartDate = watch('insuranceInformation.effectiveStartDate')
   const isInsuranceSelected = paymentMethod === 'insurance'
 
   const handleFrontCardFileSelect = (files: File[]) => {
@@ -281,18 +282,38 @@ const InsuranceInformation: React.FC = () => {
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <CustomLabel isRequired={true}>Effective Start & End Date</CustomLabel>
+                    <CustomLabel isRequired={true}>Effective Start Date</CustomLabel>
                     <Controller
                       name="insuranceInformation.effectiveStartDate"
                       control={control}
                       render={({ field }) => (
-                        <CustomInput
-                          placeholder="Select Date"
-                          type="date"
+                        <CustomDatePicker
+                          placeholder="MM/DD/YYYY"
                           containerSx={{ mb: 0 }}
                           hasError={!!errors.insuranceInformation?.effectiveStartDate}
                           errorMessage={errors.insuranceInformation?.effectiveStartDate?.message}
-                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
+                          required={true}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <CustomLabel>Effective End Date</CustomLabel>
+                    <Controller
+                      name="insuranceInformation.effectiveEndDate"
+                      control={control}
+                      render={({ field }) => (
+                        <CustomDatePicker
+                          placeholder="MM/DD/YYYY"
+                          containerSx={{ mb: 0 }}
+                          hasError={!!errors.insuranceInformation?.effectiveEndDate}
+                          errorMessage={errors.insuranceInformation?.effectiveEndDate?.message}
+                          value={field.value}
+                          onChange={field.onChange}
+                          minDate={effectiveStartDate} // Use the watched value
                         />
                       )}
                     />
