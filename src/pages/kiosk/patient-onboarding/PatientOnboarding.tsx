@@ -16,6 +16,7 @@ import {
     Other 
 } from "./";
 import { patientOnboardingSchema, defaultValues, PatientOnboardingFormData } from "./validationSchema";
+import { useNavigate } from "react-router-dom";
 
 const PatientOnboarding = () => {
     const [avatarSrc, setAvatarSrc] = useState<string>('')
@@ -49,6 +50,13 @@ const PatientOnboarding = () => {
         console.log('Form submitted:', data)
         // Handle form submission here
     }
+
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        navigate("/patient-listing");
+    }
+
 
     const handleSsnNoteSubmit = (note: string) => {
         setValue('demographics.ssnNote', note)
@@ -256,7 +264,7 @@ const PatientOnboarding = () => {
                 {/* Header */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, p: 2, borderBottom: `2px solid ${COLORS.GRAY_200}` }}>
                     <IconButton
-                        onClick={handleCancel}
+                        onClick={handleBack}
                         sx={{ fontFamily: TYPOGRAPHY.fontFamily.primary, fontWeight: '600', color: COLORS.GRAY_900, fontStyle: 'SemiBold', fontSize: '18px', lineHeight: '120%', letterSpacing: '0%' }}
                     >
                         <ArrowBack />
