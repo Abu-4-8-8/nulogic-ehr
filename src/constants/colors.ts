@@ -45,10 +45,17 @@ export const COLORS = {
   INFO: '#0288d1',
   
   // Neutral colors (from Figma)
-  NEUTRAL_80: '#21262B', // Main text color from Figma
-  NEUTRAL_70: '#373D41', // Neutral/70 from Figma - used for dropdown text
-  NEUTRAL_60: '#595F63', // Neutral/60 from Figma - used for inactive text
-  NEUTRAL_5: '#E7E7E7',  // Border color from Figma
+  NEUTRAL_1: '#F5F5F5',   // Very light gray
+  NEUTRAL_5: '#E7E7E7',   // Light gray - Border color from Figma
+  NEUTRAL_10: '#DBDBDB',  // Light gray
+  NEUTRAL_20: '#C9CBCC',  // Light gray
+  NEUTRAL_30: '#B4B5B5',  // Medium light gray
+  NEUTRAL_40: '#9B9E9F',  // Medium gray
+  NEUTRAL_50: '#74797B',  // Medium gray
+  NEUTRAL_60: '#596063',  // Medium dark gray - used for inactive text
+  NEUTRAL_70: '#373E41',  // Dark gray - used for dropdown text
+  NEUTRAL_80: '#21282B',  // Very dark gray - Main text color from Figma
+  NEUTRAL_90: '#0E181D',  // Very dark gray
   NEUTRAL_ICON: '#373E41', // Icon color from Figma
   ACTIVE_BG: '#EEF7FE',   // Active background from Figma
   
