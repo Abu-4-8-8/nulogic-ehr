@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Box, Card, CardContent, Grid, Typography, FormControlLabel, Radio, RadioGroup, Button } from '@mui/material'
-import { CustomInput, CustomDropdown, CustomLabel, CustomUpload } from '../../../components/common'
+import { CustomInput, CustomDropdown, CustomLabel, CustomUpload } from '../../../components/custom-fields'
 import { COLORS } from '../../../constants/colors'
 import TYPOGRAPHY from '../../../constants/typography'
 import { PatientOnboardingFormData } from './validationSchema'

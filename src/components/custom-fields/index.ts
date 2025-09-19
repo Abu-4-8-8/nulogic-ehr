@@ -13,7 +13,7 @@ export type { CustomDropdownProps, DropdownOption } from './CustomDropdown'
 export { default as CustomLabel } from './CustomLabel'
 export type { CustomLabelProps } from './CustomLabel'
 
-export { default as CustomDialog } from './CustomDialog'
+export { default as CustomDialog } from '../widgets/CustomDialog'
 
 export { default as CustomRadioButton } from './CustomRadioButton'
 export { default as CustomUpload } from './CustomUpload'

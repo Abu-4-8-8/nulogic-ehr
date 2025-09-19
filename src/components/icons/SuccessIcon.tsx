@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box } from '@mui/material'
-import { Warning as WarningIconMui } from '@mui/icons-material'
-import { COLORS } from '../../../constants/colors'
+import { Check as CheckIcon } from '@mui/icons-material'
+import { COLORS } from '../../constants/colors'
 
-export interface WarningIconProps {
+export interface SuccessIconProps {
   size?: number
 }
 
-const WarningIcon: React.FC<WarningIconProps> = ({
+const SuccessIcon: React.FC<SuccessIconProps> = ({
   size = 80
 }) => {
   return (
@@ -16,14 +16,14 @@ const WarningIcon: React.FC<WarningIconProps> = ({
         width: size,
         height: size,
         borderRadius: '50%',
-        backgroundColor: '#F59E0B', // Amber color for warning
+        backgroundColor: COLORS.PRIMARY, // #0077C6 from Figma
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative'
       }}
     >
-      <WarningIconMui
+      <CheckIcon
         sx={{
           fontSize: size * 0.8125, // 65px for 80px container
           color: COLORS.WHITE
@@ -33,4 +33,4 @@ const WarningIcon: React.FC<WarningIconProps> = ({
   )
 }
 
-export default WarningIcon 
+export default SuccessIcon 

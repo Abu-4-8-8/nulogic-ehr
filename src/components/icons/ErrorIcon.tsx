@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import { Error as ErrorIconMui } from '@mui/icons-material'
-import { COLORS } from '../../../constants/colors'
+import { COLORS } from '../../constants/colors'
 
 export interface ErrorIconProps {
   size?: number

@@ -82,7 +82,7 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
           color: '#FFFFFF',
           '&:hover': {
                     backgroundColor: customColor === 'primary' ? COLORS.PRIMARY_70 :
-          customColor === 'secondary' ? COLORS.PRIMARY_70 :
+          customColor === 'secondary' ? COLORS.SECONDARY_70 :
                             customColor === 'success' ? '#1b5e20' :
                             customColor === 'error' ? '#c62828' :
                             customColor === 'warning' ? '#e65100' :
@@ -93,7 +93,7 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
             boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
           },
           '&.Mui-disabled': {
-            backgroundColor: COLORS.NEUTRAL_30,
+            backgroundColor: COLORS.NEUTRAL_60,
             color: COLORS.NEUTRAL_50,
             boxShadow: 'none',
           },

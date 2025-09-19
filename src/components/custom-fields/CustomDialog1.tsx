@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import * as React from "react";
-import { customDialogStyles } from "./widgets/custom-dialog-styles";
+import { customDialogStyles } from "../widgets/custom-dialog-styles";
 
 interface CustomDialogProps {
   title: React.ReactNode;

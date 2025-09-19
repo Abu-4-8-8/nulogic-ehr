@@ -6,7 +6,7 @@ import { Box, IconButton, Tab, Tabs, Typography, TextField, DialogActions, Alert
 import { COLORS } from "../../../constants/colors";
 import TYPOGRAPHY from "../../../constants/typography";
 import CheckIcon from "@mui/icons-material/Check";
-import { CustomDialog, CustomButton } from "../../../components/common";
+import { CustomDialog, CustomButton } from "../../../components/custom-fields";
 import { 
     Demographics, 
     ContactInformation, 
